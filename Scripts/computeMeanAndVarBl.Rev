@@ -1,0 +1,54 @@
+
+#treetrace = readTreeTrace(aln_file+".trees", treetype="non-clock", outgroup=clade(data.names()[1]))
+
+treetrace = readTreeTrace("Alignments/extantTree_1.fa.trees")
+#treetrace = readBranchLengthTrees("Alignments/extantTree_1.fa.trees")
+
+trees <- treetrace.getTrees()
+
+num_branches = 2*trees[1].ntips()-1
+
+bl_means <- rep(0.0,num_branches)
+bl_means[5] <- 5.0
+#for (i in 1:treetrace.size()) {
+
+for (i in 1:10) {
+  for (j in 2:num_branches-1 ) {
+      bl_means[j] <- bl_means[j] + trees[i].branchLength(j)
+#      print(bl_means[j])
+#      print(treetrace.getTree(i).branchLength(j))
+    }
+}
+
+for (j in 2:num_branches ) {
+  bl_means[j] <- bl_means[j] / 10   #trees.size()
+}
+print(bl_means)
+
+tree <- trees[1]
+
+print(tree)
+tree.getIndices()
+for (j in 2:num_branches-1 ) {
+  tree.setBranchLength(j, bl_means[j])
+}
+print(tree)
+tree.setBranchLength(9, 8888888)
+print(tree)
+
+### THE ABOVE DOES NOT WORK: MY FEELING: can't edit trees read with readTreeTrace, but can edit them with readBranchLengthTrees (shown below)
+
+
+
+
+tree <- readBranchLengthTrees("test.tree")[1]
+tree.branchLength(1)
+print(tree)
+num_branches = 2*tree.ntips()-1
+for (j in 2:num_branches-1 ) {
+  tree.setBranchLength(j, j)
+}
+print(tree)
+tree.setBranchLength(1, 8888888)
+tree.branchLength(1)
+print(tree)

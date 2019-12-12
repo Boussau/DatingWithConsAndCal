@@ -1,0 +1,38 @@
+################################################################################
+#
+# RevBayes Script: Simulation of alignment using a HKY model.
+#
+################################################################################
+
+n_sites = 1000
+
+######################
+# Substitution Model #
+######################
+# create a constant variable for the rate matrix
+Q <- fnHKY(kappa=3, baseFrequencies=Simplex(0.18, 0.27, 0.33, 0.22) )
+
+##############
+# Tree model #
+##############
+# It's constant.
+tree <- readBranchLengthTrees(tree_file)[1]
+
+###################
+# Site rate model #
+###################
+sr := fnDiscretizeGamma(shape=0.3, rate=0.3, numCats=20, false)
+
+###################
+# PhyloCTMC Model #
+###################
+# the sequence evolution model
+seq ~ dnPhyloCTMC(tree=tree, Q=Q, siteRates=sr, type="DNA", nSites=n_sites)
+
+###################
+# Saving the data #
+###################
+writeFasta(filename=tree_file+".fasta", data=seq)
+
+# you may want to quit RevBayes now
+q()
