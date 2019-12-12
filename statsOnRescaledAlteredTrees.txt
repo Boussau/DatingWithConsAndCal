@@ -1,0 +1,130 @@
+		 File SimulatedTrees/extantTree_10_rescaled_altered_unrooted.dnd : 
+             bls
+count  58.000000
+mean    0.557927
+std     1.055160
+min     0.000000
+25%     0.063693
+50%     0.287493
+75%     0.553082
+max     7.290680
+##########################
+##########################
+
+		 File SimulatedTrees/extantTree_1_rescaled_altered_unrooted.dnd : 
+             bls
+count  58.000000
+mean    2.920010
+std     4.897069
+min     0.000000
+25%     0.076603
+50%     0.426783
+75%     2.943403
+max    20.710000
+##########################
+##########################
+
+		 File SimulatedTrees/extantTree_2_rescaled_altered_unrooted.dnd : 
+             bls
+count  58.000000
+mean    0.183113
+std     0.188537
+min     0.000000
+25%     0.056976
+50%     0.122244
+75%     0.265571
+max     0.990160
+##########################
+##########################
+
+		 File SimulatedTrees/extantTree_3_rescaled_altered_unrooted.dnd : 
+             bls
+count  58.000000
+mean    0.236815
+std     0.418361
+min     0.000000
+25%     0.035662
+50%     0.087468
+75%     0.205690
+max     2.370720
+##########################
+##########################
+
+		 File SimulatedTrees/extantTree_4_rescaled_altered_unrooted.dnd : 
+             bls
+count  58.000000
+mean    0.425938
+std     1.474835
+min     0.000000
+25%     0.010261
+50%     0.020754
+75%     0.085230
+max    10.292100
+##########################
+##########################
+
+		 File SimulatedTrees/extantTree_5_rescaled_altered_unrooted.dnd : 
+             bls
+count  58.000000
+mean    0.196439
+std     0.266416
+min     0.000000
+25%     0.032143
+50%     0.110120
+75%     0.218841
+max     1.352310
+##########################
+##########################
+
+		 File SimulatedTrees/extantTree_6_rescaled_altered_unrooted.dnd : 
+             bls
+count  58.000000
+mean    0.298286
+std     0.378819
+min     0.000000
+25%     0.039621
+50%     0.157073
+75%     0.407229
+max     1.825620
+##########################
+##########################
+
+		 File SimulatedTrees/extantTree_7_rescaled_altered_unrooted.dnd : 
+             bls
+count  58.000000
+mean    0.367753
+std     0.634412
+min     0.000000
+25%     0.059663
+50%     0.178561
+75%     0.368938
+max     3.913250
+##########################
+##########################
+
+		 File SimulatedTrees/extantTree_8_rescaled_altered_unrooted.dnd : 
+             bls
+count  58.000000
+mean    0.390816
+std     0.609290
+min     0.000000
+25%     0.062738
+50%     0.128546
+75%     0.370314
+max     2.675590
+##########################
+##########################
+
+		 File SimulatedTrees/extantTree_9_rescaled_altered_unrooted.dnd : 
+             bls
+count  58.000000
+mean    0.176923
+std     0.253041
+min     0.000000
+25%     0.045366
+50%     0.099744
+75%     0.167815
+max     1.328640
+##########################
+##########################
+
