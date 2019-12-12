@@ -44,7 +44,7 @@ print("The tree with mean branch lengths has been saved.")
 
 print ("Computing variance tree")
 for (j in 2:num_branches-1 ) {
-  MAPtree.setBranchLength(j, bl_squaredmeans[j] - bl_means[j]^2)
+  MAPtree.setBranchLength(j, abs ( bl_squaredmeans[j] - bl_means[j]^2) )
 }
 
 writeNexus("varBLTree.nex", MAPtree)
