@@ -31,21 +31,21 @@ nodeId2LeafListRef, leafList2NodeIdRef, idToDescendants = getNameToLeavesAndIdTo
 # Let's order the nodes according to their heights:
 d_ascending = OrderedDict(sorted(id2Height.items(), key=lambda kv: kv[1]))
 
-print("d_ascending: ")
-print(d_ascending)
+# print("d_ascending: ")
+# print(d_ascending)
 
 # We will use idToDescendants to fill lists of nodes not to use as constraints
 
 idToForbidden = dict()
 for k,v in idToDescendants.items():
     values = SortedSet(v)
-    print(values)
+    # print(values)
     idToForbidden[k] = values
 
 downstreamNodes = deque()
 constraints = list()
 for k, v in d_ascending.items():
-    print(v)
+    # print(v)
     if v <= 0.0000001: # very small value, ==0
         print("small")
         pass
@@ -60,9 +60,9 @@ for k, v in d_ascending.items():
                 constraints.append((k,younger))
                 print("Adding constraint between" + k + " and " + younger)
         downstreamNodes.append(k)
-        print("downstreamNodes.size(): "+str(len(downstreamNodes)))
+        # print("downstreamNodes.size(): "+str(len(downstreamNodes)))
 
-print (constraints)
+# print (constraints)
 
 
 
@@ -73,22 +73,32 @@ except IOError:
     sys.exit()
 
 
-# Output constraints in a format palatable by RevBayes
+# Output constraints in a format almost directly palatable by RevBayes
+fout.write("lef_older"+"\t"+"right_older"+"\t"+"left_younger"+"\t"+"right_younger"+"\t"+"older_age"+"\t"+"younger_age"+"\t"+"delta_age"+"\t"+"delta_nodes"+"\t" + "delta_dist" + "\t" + "across_the_root"+"\n")
+
 for o,y in constraints:
-    print(o)
-    print(y)
-    lo,ro = getLeftRightTips(t.search_nodes(name=o)[0])
-    ly,ry = getLeftRightTips(t.search_nodes(name=y)[0])
-    fout.write(lo+"\t"+ro+"\t"+ly+"\t"+ry+"\n")
+    # print(o)
+    # print(y)
+    node_o = t.search_nodes(name=o)[0]
+    node_y = t.search_nodes(name=y)[0]
+    lo,ro = getLeftRightTips(node_o)
+    ly,ry = getLeftRightTips(node_y)
+    o_age = id2Height[ o ]
+    y_age = id2Height[ y ]
+    delta_age = o_age - y_age
+    delta_nodes = node_o.get_distance(y, topology_only=True)
+    delta_dist = node_o.get_distance(y)
+    ancestor = t.get_common_ancestor(o, y)
+    across_the_root = ancestor.is_root()
+    fout.write(lo+"\t"+ro+"\t"+ly+"\t"+ry+"\t"+str(o_age)+"\t"+str(y_age)+"\t"+str(delta_age)+"\t"+str(delta_nodes)+"\t" + str(delta_dist) + "\t" + str(across_the_root)+"\n")
 
 fout.close()
 
-print(id2Height)
-print("\n")
-print(nodeId2LeafListRef)
-print("\n")
-print(leafList2NodeIdRef)
-print("\n")
-print(idToDescendants)
-
-print(t.write(format=2))
+# print(id2Height)
+# print("\n")
+# print(nodeId2LeafListRef)
+# print("\n")
+# print(leafList2NodeIdRef)
+# print("\n")
+# print(idToDescendants)
+# print(t.write(format=2))
