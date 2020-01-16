@@ -4,7 +4,7 @@ library(TreeSim)
 
 n<-30
 lambda <- 0.9 #0.3
-mu <- 0.09  #0.02
+mu <- 0.15  #0.09  #0.02
 frac <-1.0
 numbsim<-10
 

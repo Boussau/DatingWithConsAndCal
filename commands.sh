@@ -44,10 +44,23 @@ echo "aln_file=\"Alignments/extantTree_rescaled_altered_unrooted.dnd.fasta\"; tr
 #########################################################
 
 # First, calibrations:
+# 4 ways of sampling constraints:
+- balanced (both sides of the root)
+- unbalanced (one side of the root only)
+- randomly (all nodes have the same probability to be picked)
+- old-biased (older nodes are more likely to be picked; the weight is according to their order in the list of node ages)
 
+
+# Getting old and young calibrations, on both sides:
+python Scripts/extractCalibrations.py SimulatedTrees/extantTree.dnd 10 y both
+
+# Getting old and young calibrations, on one side only:
+python Scripts/extractCalibrations.py SimulatedTrees/extantTree.dnd 10 n both
 
 # Second, constraints:
-for i in SimulatedTrees/extantTree_[123456789].dnd SimulatedTrees/extantTree_10.dnd ; do python Scripts/extractRelativeConstraints.py $i ; done
+python Scripts/extractRelativeConstraints.py SimulatedTrees/extantTree.dnd
+
+# for i in SimulatedTrees/extantTree_[123456789].dnd SimulatedTrees/extantTree_10.dnd ; do python Scripts/extractRelativeConstraints.py $i ; done
 
 
 

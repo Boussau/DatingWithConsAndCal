@@ -60,6 +60,31 @@ def getNameToLeavesAndIdToDescendantIdsLink( t ):
 
 
 
+def getInternalNodeHeights( t ):
+    node2Height = dict()
+    id2Height = dict()
+    root = t.get_tree_root()
+    farthest, totalHeight = root.get_farthest_node()
+    for node in t.traverse("postorder"):
+        if node not in node2Height :
+            dist = root.get_distance(node.name)
+            node2Height[node] = totalHeight-dist
+            if not node.is_leaf():
+                id2Height[node.name] = totalHeight-dist
+        if node.up:
+            if node.up.name =='':
+                leaves = node.up.get_leaves()
+                name=""
+                for l in leaves:
+                    name += l.name
+                node.up.name=name
+            node2Height[node.up] = node2Height[node] + node.dist
+            id2Height[str(node.up.name)] = node2Height[node] + node.dist
+      # print node.name + " : " + str(node2Height[node])
+    #return node2Height,id2Height
+    return id2Height
+
+
 def getNodeHeights( t ):
     node2Height = dict()
     id2Height = dict()
