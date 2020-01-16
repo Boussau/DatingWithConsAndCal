@@ -1,18 +1,11 @@
-
-#treetrace = readTreeTrace(aln_file+".trees", treetype="non-clock", outgroup=clade(data.names()[1]))
-
-treetrace = readTreeTrace("BUPAlignments/extantTree_1_rescaled_altered_unrooted.dnd.fasta_SmallSubset.trees")
-MAPtree = readBranchLengthTrees("BUPAlignments/extantTree_1_rescaled_altered_unrooted.dnd.fasta.tree")[1]
-
-trees <- treetrace.getTrees()
+trees = readBranchLengthTrees("example.treelist")
+MAPtree = readBranchLengthTrees("example.treelist")[1]
 
 num_branches = trees[1].nnodes()-1
 
 bl_means <- rep(0.0,num_branches)
 bl_squaredmeans <- rep(0.0,num_branches)
 
-print ("treetrace.size()")
-print(treetrace.size())
 print("trees.size()")
 print(trees.size())
 
@@ -22,12 +15,12 @@ print(trees[1].branchLength(1))
 print("trees[1].branchLength(num_branches)")
 print(trees[1].branchLength(num_branches))
 
-print("FOr:")
+print("For:")
 for (j in 1:num_branches ) {
   print(trees[1].branchLength(j))
   }
 
-for (i in 1:(trees.size()-1)) {
+for (i in 1:(trees.size())) {
   for (j in 1:num_branches ) {
     bl_means[j] <- bl_means[j] + trees[i].branchLength(j)
     bl_squaredmeans[j] <- bl_squaredmeans[j] + trees[i].branchLength(j)^2
@@ -35,8 +28,8 @@ for (i in 1:(trees.size()-1)) {
 }
 
 for (j in 1:num_branches ) {
-  bl_means[j] <- bl_means[j] / (trees.size()-1)
-  bl_squaredmeans[j] <- bl_squaredmeans[j] / (trees.size()-1)
+  bl_means[j] <- bl_means[j] / (trees.size())
+  bl_squaredmeans[j] <- bl_squaredmeans[j] / (trees.size())
 }
 
 print("\n\t\þBEFORE changing branch lengths")
