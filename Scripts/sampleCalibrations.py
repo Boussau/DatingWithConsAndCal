@@ -15,11 +15,13 @@ calibrations = list()
 newcalib = False
 current = ""
 for l in f:
-    if "####### Internal node constraints #######" in l:
+    if "####### Internal node calibrations #######" in l:
         pass
-    elif "### we create a deterministic node for the age of the MRCA of each clade with an extinct species" in l:
+    elif "############Random calibrations" in l:
         pass
-    elif "### the age of the node is a function of the fossil age" in l:
+    elif "############Old calibrations overrepresented" in l:
+        pass
+    elif "### we create a deterministic node for the age of the MRCA of each clade with a fossil calibration" in l:
         newcalib=True
         if current != "":
             calibrations.append(current)
@@ -31,8 +33,10 @@ if current != "":
 
 f.close()
 
-#for c in calibrations:
-#    print(c)
+# for c in calibrations:
+#     print(c)
+
+print(len(calibrations))
 
 sels = random.sample(calibrations, num)
 
