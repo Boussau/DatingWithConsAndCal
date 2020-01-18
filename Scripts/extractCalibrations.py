@@ -51,11 +51,10 @@ def biasedWeights(d):
     return weights
 
 
-def outputCalibrations(clades, ages, fout2, fout, sentence):
-    index = 0
+def outputCalibrations(clades, ages, fout2, fout, sentence, index):
     fout2.write("\n############"+ sentence)
     fout2.write("####### Internal node calibrations #######\n")
-    fout.write("######### Clade file ##########")
+    fout.write("######### Clade file ##########\n")
     for c in clades:
         name_clade = "clade_"+str(index)
         fout.write(name_clade+" = clade(")
@@ -75,6 +74,7 @@ def outputCalibrations(clades, ages, fout2, fout, sentence):
         fout2.write("obs_age_"+name_clade+" ~ dnSoftBoundUniformNormal(min=age_fossil_"+name_clade+" - width_age_prior_"+name_clade+", max=age_fossil_"+name_clade+" + width_age_prior_"+name_clade+", sd=2.5, p=0.95\n")
         fout2.write("obs_age_"+name_clade+".clamp( mean_age_prior_"+name_clade +")\n" )
         index = index+1
+    return index
 
 
 ##########################################
@@ -121,6 +121,9 @@ if __name__ == "__main__":
     nodeId2LeafListRef, leafList2NodeIdRef, idToDescendants = getNameToLeavesAndIdToDescendantIdsLink( t_begin )
     # Let's order the nodes according to their heights:
     d_ascending = OrderedDict(sorted(id2Height.items(), key=lambda kv: kv[1]))
+
+    # Removing the root node
+    d_ascending.popitem()
 
     calibrated_nodes_red = list()
     calibrated_nodes_blue = list()
@@ -182,6 +185,8 @@ if __name__ == "__main__":
 
     print(list(nodeId2LeafListRef.keys()))
 
+    print(t.get_tree_root().name)
+
     for n in calibrated_nodes_red:
         clades_red.append(nodeId2LeafListRef[float(n)])
         ages_red.append(id2Height[n])
@@ -193,9 +198,9 @@ if __name__ == "__main__":
     print(len(clades_red))
     print(len(clades_blue))
 
-
-    outputCalibrations(clades_red, ages_red, fout, fout2, "Old calibrations overrepresented\n")
-    outputCalibrations(clades_blue, ages_blue, fout, fout2, "Random calibrations\n")
+    index = 0
+    index = outputCalibrations(clades_red, ages_red, fout, fout2, "Old calibrations overrepresented\n", index)
+    index = outputCalibrations(clades_blue, ages_blue, fout, fout2, "Random calibrations\n", index)
 
 
     ################
