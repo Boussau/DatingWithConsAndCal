@@ -71,7 +71,7 @@ def outputCalibrations(clades, ages, fout2, fout, sentence, index):
         fout2.write("age_fossil_"+name_clade+" <- tmrca(psi,"+name_clade+")\n")
         fout2.write("width_age_prior_"+name_clade+" <- tmrca_" + name_clade + " / 5  # By default we decide that the width of the calibration interval is fossil_age/5\n")
         fout2.write("mean_age_prior_"+name_clade+" <- tmrca_" + name_clade + "\n")
-        fout2.write("obs_age_"+name_clade+" ~ dnSoftBoundUniformNormal(min=age_fossil_"+name_clade+" - width_age_prior_"+name_clade+", max=age_fossil_"+name_clade+" + width_age_prior_"+name_clade+", sd=2.5, p=0.95\n")
+        fout2.write("obs_age_"+name_clade+" ~ dnSoftBoundUniformNormal(min=age_fossil_"+name_clade+" - width_age_prior_"+name_clade+", max=age_fossil_"+name_clade+" + width_age_prior_"+name_clade+", sd=2.5, p=0.95)\n")
         fout2.write("obs_age_"+name_clade+".clamp( mean_age_prior_"+name_clade +")\n" )
         index = index+1
     return index
