@@ -57,12 +57,27 @@ python Scripts/extractCalibrations.py SimulatedTrees/extantTree.dnd 10 y both
 # Getting old and young calibrations, on one side only:
 python Scripts/extractCalibrations.py SimulatedTrees/extantTree.dnd 10 n both
 
-# Second, constraints:
-python Scripts/extractRelativeConstraints.py SimulatedTrees/extantTree.dnd
-
-# for i in SimulatedTrees/extantTree_[123456789].dnd SimulatedTrees/extantTree_10.dnd ; do python Scripts/extractRelativeConstraints.py $i ; done
+# Second, constraints, by hand a priori:
+# python Scripts/extractRelativeConstraints.py SimulatedTrees/extantTree.dnd
 
 
+
+#########################################################
+# Dating with branch lengths, constraints and calibrations
+#########################################################
+
+# Little test:
+
+echo "tree_file=\"Alignments/10First.trees\"; source(\"Scripts/DatingRevScripts/computeMeanAndVarBl.Rev\");" | rb
+
+# This gave us 10First.trees_meanBL.nex and 10First.trees_varBL.nex
+# We select calibrations:
+python Scripts/sampleCalibrations.py SimulatedTrees/extantTree_calibrations.Rev SimulatedTrees/extantTree_calibrations_5.Rev 5
+# And we select constraints, by hands to produce file SimulatedTrees/extantTree_constraints_5.txt
+
+
+#### Dating the tree:
+echo "tree_file=\"SimulatedTrees/extantTree_rescaled.dnd\"; calibration_file=\"SimulatedTrees/extantTree_calibrations_5.Rev\" ; constraint_file=\"SimulatedTrees/extantTree_constraints_5.txt\" ; clade_file=\"SimulatedTrees/extantTree_clades.Rev\" ; mean_tree_file=\"Alignments/10First.trees_meanBL.nex\" ; var_tree_file=\"Alignments/10First.trees_varBL.nex\" ; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
 
 
 
