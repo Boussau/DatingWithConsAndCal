@@ -30,7 +30,7 @@ if (!exists("var_tree_file"))    "ERROR: `var_tree_file` undefined"
 # Options #
 ###########
 handle="test"
-rate_model="WNr"
+rate_model="LNr"    #"WNr"
 ctmc="BL"
 tree_model="BD"
 constrain=false
@@ -53,7 +53,7 @@ initialize_rates=true
 var_scaling=1
 
 #inital root height to control time units
-initial_root_height=1.8
+# initial_root_height=1.8
 
 #calibrations
 calib_file=calibration_file
@@ -62,7 +62,7 @@ cons_file=constraint_file
 
 
 tree <- readTrees(tree_file)[1]
-tree.makeUltrametric()
+##tree.makeUltrametric()
 
 if (ctmc!="BL")
 {
@@ -88,6 +88,8 @@ taxa <- tree.taxa()
 ##############
 root_time ~ dnExp(1)
 
+root_time.setValue(tree.rootAge())
+
 ################
 # Constraints  #
 ################
@@ -109,8 +111,9 @@ if (time_moves)
         moves[mvi++] = mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*n_branches)
 }
 
-# We rescale the tree so that the root age is initial_root_height
-tree.rescale( initial_root_height / tree.rootAge() )
+# WE DON'T DO THAT : We rescale the tree so that the root age is initial_root_height
+# tree.rescale( initial_root_height / tree.rootAge() )
+
 # We fix the tree
 psi.setValue(tree)
 
@@ -158,7 +161,7 @@ monitors[++mni] = mnModel(filename=fname_stem+".log",printgen=10, separator = TA
 monitors[++mni] = mnStochasticVariable(filename=fname_stem+"_Stoch.log",printgen=10)
 
 monitors[++mni] = mnExtNewick(filename=fname_stem+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates)
-monitors[++mni] = mnScreen(printgen=mcmc_printgen, mean_rt, var_rt,root_time,age_1,age_2)
+monitors[++mni] = mnScreen(printgen=mcmc_printgen, mean_rt, var_rt,root_time,ages[1], ages[5], ages[50])
 
 #mymcmc = mcmcmc(mymodel, monitors, moves, nruns=2, nchains=3)
 
