@@ -120,6 +120,13 @@ if (ctmc=="BL" || initialize_rates) {
   var_tree <- readTrees(var_tree_file)[1]
   source("Scripts/DatingRevScripts/readBLTrees.Rev");
 }
+
+##########
+# Clades #
+##########
+source(clade_file)
+
+
 ################
 # Calibrations #
 ################
