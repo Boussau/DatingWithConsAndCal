@@ -1,0 +1,15 @@
+
+##########
+# STRICT #
+##########
+
+branch_rates ~ dnExp(1)
+
+# moves
+if (add_moves) moves[mvi++] = mvScale(branch_rates, lambda=0.5, weight=10.0);
+
+extension += "_strict"
+
+##########
+# STRICT #
+##########

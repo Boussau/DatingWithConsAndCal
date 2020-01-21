@@ -30,7 +30,7 @@ if (!exists("var_tree_file"))    "ERROR: `var_tree_file` undefined"
 # Options #
 ###########
 handle="test"
-rate_model="LNr"    #"WNr"
+rate_model="strictr"   #"LNr"    #"WNr"
 ctmc="BL"
 tree_model="BD"
 constrain=false
@@ -102,6 +102,7 @@ constraints <- readRelativeNodeAgeConstraints(file=cons_file);
 # Tree model #
 ##############
 source("Scripts/DatingRevScripts/GergelyScripts/"+tree_model+".Rev")
+print(psi)
 ### add some moves that change the ages of the nodes in the tree
 if (time_moves)
 {
@@ -116,6 +117,8 @@ if (time_moves)
 
 # We fix the tree
 psi.setValue(tree)
+
+print(psi)
 
 #read mean and var bls
 if (ctmc=="BL" || initialize_rates) {
@@ -149,7 +152,10 @@ source("Scripts/DatingRevScripts/GergelyScripts/"+ctmc+".Rev")
 for(i in 1:n_branches)
 {
   ages[i] := psi.nodeAge(i)
+  ages2[i] := tree.nodeAge(i)
 }
+print(ages)
+print(ages2)
 
 #############
 # THE Model #
@@ -161,7 +167,7 @@ monitors[++mni] = mnModel(filename=fname_stem+".log",printgen=10, separator = TA
 monitors[++mni] = mnStochasticVariable(filename=fname_stem+"_Stoch.log",printgen=10)
 
 monitors[++mni] = mnExtNewick(filename=fname_stem+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates)
-monitors[++mni] = mnScreen(printgen=mcmc_printgen, mean_rt, var_rt,root_time,ages[1], ages[5], ages[50])
+monitors[++mni] = mnScreen(printgen=mcmc_printgen, root_time, ages[103], ages[110], ages[150])
 
 #mymcmc = mcmcmc(mymodel, monitors, moves, nruns=2, nchains=3)
 
