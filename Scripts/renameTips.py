@@ -37,6 +37,6 @@ for t in trees:
         leaf.name = nameToNewName[leaf.name]
 
 
-with open(file_output, 'w') as fo:
+with open(out, 'w') as fo:
     for t in trees:
-        fo.write(t.write(format=1))
+        fo.write(t.write(format=1, dist_formatter='%0.6f') + "\n")
