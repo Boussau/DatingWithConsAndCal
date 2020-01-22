@@ -29,6 +29,9 @@ blBefore = list()
 blAfter = list()
 
 for node in t.traverse("postorder"):
+    if node.is_root():
+        pass
+    else:
         blBefore.append(node.dist)
         node.dist = node.dist*scale
         blAfter.append(node.dist)

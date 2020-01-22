@@ -1,3 +1,30 @@
+### We get the trees with empirical dates but shuffled topologies from Dominik in the folder ShuffledTrees
+# We rename the trees to avoid confusing these artificial trees with empirical ones
+python Scripts/renameTips.py ShuffledTrees/shuffle.tree
+
+# then I arbitrarily choose tree 2:
+cd ShuffledTrees
+head -2 shuffle_renamed.dnd | tail -1 > proposedTree.dnd
+figtree proposedTree.dnd& # we got proposedTree.dnd.pdf
+cd ..
+
+# Now we're going to use this tree for the simulation work.
+mkdir SimulatedTrees
+cp ShuffledTrees/proposedTree.dnd SimulatedTrees/
+
+# Rescaling the trees
+for i in SimulatedTrees/proposedTree.dnd ; do python Scripts/rescaleTree.py $i 0.03 ; done > statsOnRescaledTrees.txt
+
+# Introducing deviations from the clock
+for i in SimulatedTrees/proposedTree*_rescaled.dnd ; do python Scripts/alterBranchLengths.py $i 0.03 0.1 1.0 0.2 0.01 ${i/.dnd}_altered.dnd n ; done
+
+# unrooting the tree, because revbayes does not like rooted branch length trees
+for i in SimulatedTrees/extantTree*_rescaled_altered.dnd ; do python Scripts/unrootTree.py $i ; done
+
+# Get statistics on branch lengths of the altered and unrooted trees
+for i in SimulatedTrees/extantTree*_rescaled_altered_unrooted.dnd ; do python Scripts/getBranchLengthStats.py $i ; done > statsOnRescaledAlteredTrees.txt
+
+
 pick up one larger tree with ~100 leaves. Then consider situations where:
 calibrations are placed in an unbalanced way
 calibrations are placed in a balanced way
