@@ -77,7 +77,7 @@ python Scripts/sampleCalibrations.py SimulatedTrees/extantTree_calibrations.Rev 
 
 
 #### Dating the tree:
-echo "tree_file=\"SimulatedTrees/extantTree_rescaled.dnd\"; calibration_file=\"SimulatedTrees/extantTree_calibrations_5.Rev\" ; constraint_file=\"SimulatedTrees/extantTree_constraints_5.txt\" ; clade_file=\"SimulatedTrees/extantTree_clades.Rev\" ; mean_tree_file=\"Alignments/10First.trees_meanBL.nex\" ; var_tree_file=\"Alignments/10First.trees_varBL.nex\" ; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
+echo "tree_file=\"SimulatedTrees/extantTree.dnd\"; calibration_file=\"SimulatedTrees/extantTree_calibrations_5.Rev\" ; constraint_file=\"SimulatedTrees/extantTree_constraints_5.txt\" ; clade_file=\"SimulatedTrees/extantTree_clades.Rev\" ; mean_tree_file=\"Alignments/10First.trees_meanBL.nex\" ; var_tree_file=\"Alignments/10First.trees_varBL.nex\" ; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
 
 
 
