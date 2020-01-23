@@ -1,15 +1,33 @@
 # print errors for undefined variables
 if (!exists("tree_file")) "ERROR: `tree_file` undefined"
+if (!exists("burnin")) "ERROR: `burnin` undefined"
+if (!exists("thinning")) "ERROR: `thinning` undefined"
+
 
 print("tree_file: " + tree_file)
 
 trees_only = tree_file + "_trees_only.nxs"
 
-tree_trace = readTreeTrace(tree_file)
+tree_trace = readTreeTrace(tree_file)   #, burnin=burnin, thinning=thinning)
+
+type(tree_trace)
+
 writeNexus(trees_only, tree_trace.getTrees())
 
 
-trees = readBranchLengthTrees(trees_only)
+tre = readBranchLengthTrees(trees_only)
+
+index = 1
+for (i in burnin:tre.size()) {
+  if (i % thinning == 0) {
+    trees[index] = tre[i]
+    index = index + 1
+  }
+}
+
+print("Number of trees after burnin removal and thinning: ")
+print(trees.size())
+
 MAPtree = readBranchLengthTrees(trees_only)[1]
 
 num_branches = trees[1].nnodes()-1
