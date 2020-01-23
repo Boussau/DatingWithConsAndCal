@@ -1,0 +1,15 @@
+T_88  T_51  T_78  T_67  across  informative 1
+T_64  T_66  T_56  T_14  within  informative 4
+T_100 T_0  T_90 T_32  within  informative 6
+T_90  T_29  T_69  T_52  within  informative 9
+T_77  T_96  T_45  T_55  across  informative 12
+T_54  T_79  T_96  T_86  within  uninformative 7
+T_87  T_14  T_27  T_62  within  uninformative 10
+T_27  T_85  T_11  T_8 across  uninformative 13
+T_59  T_20  T_83  T_76  across  uninformative 15
+T_99  T_9 T_65  T_51  within  uninformative 2
+T_69  T_72  T_8 T_33  within  medium  3
+T_74  T_40  T_51  T_28  across medium 5
+T_91  T_16  T_98  T_6 within  medium  8
+T_83  T_15  T_56  T_87  within  medium  14
+T_1 T_50  T_99  T_3 within  medium  11
