@@ -3,6 +3,7 @@ from ete3 import faces, Tree, TreeStyle, NodeStyle, CircleFace, RectFace
 from collections import OrderedDict, deque
 from sortedcontainers import SortedSet
 import numpy.random as nprd
+import os.path
 import random
 
 exec (open("/home/boussau/Data/TransferRelated/datingWithTransfers/ReplicatedAnalysis_112019/Scripts/usefulFunctions.py").read ())
@@ -82,11 +83,21 @@ def outputCalibrations(clades, ages, fout2, fout, sentence, index):
 ##########################################
 if __name__ == "__main__":
     file = sys.argv[1]
-    calibration_file = file.split('.')[0]+'_calibrations.Rev'
     num_cal = int(sys.argv[2])
     balanced = sys.argv[3] # Do we want to sample calibrations in a balanced or unbalanced way
-    old = sys.argv[4] # Do we want to sample old calibrations rather than recent ones.
-    clade_file = file.split('.')[0]+'_clades.Rev'
+    old = sys.argv[4] # Do we want to sample preferentially old calibrations rather than recent ones.
+    output_folder = "Calibrations_"+str(num_cal)+"_"+balanced+"_"+old
+
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+    else:
+        print("Output folder "+ output_folder + " already exists, exiting.")
+        exit(-1)
+
+    # output files
+    calibration_file = os.path.join(output_folder, os.path.split(file)[1].split('.')[0]+'_calibrations.Rev')
+    clade_file = os.path.join(output_folder, os.path.split(file)[1].split('.')[0]+'_clades.Rev')
+    pdf_file = os.path.join(output_folder, os.path.split(file)[1].split('.')[0]+'.pdf')
 
     t = readTreeFromFile(file)
 
@@ -222,8 +233,8 @@ if __name__ == "__main__":
     # Set our custom layout function
     ts.layout_fn = layout
     ts.min_leaf_separation= 0
-    ts.scale = 200
-    t.render("mytree.pdf", w=2560, units="px",tree_style=ts)
+    ts.scale = 50
+    t.render(pdf_file, w=2560, units="px",tree_style=ts)
 
     # print(calibrated_nodes_red)
     # print(calibrated_nodes_blue)
