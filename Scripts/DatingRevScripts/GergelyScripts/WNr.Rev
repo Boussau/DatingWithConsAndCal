@@ -3,7 +3,7 @@
 ########
 
 mu ~ dnExp(1.)
-if (initialize_rates) mu.setValue(mean_tree_root_age/tree.rootAge());
+if (initialize_rates) mu.setValue(1)#mean_tree_root_age/tree.rootAge());
 
 sigma ~ dnExp(10.0)
 	
@@ -11,27 +11,38 @@ sigma ~ dnExp(10.0)
 if (add_moves) moves[mvi++] = mvScale(mu, lambda=0.5, weight=10.0,tune=true);
 if (add_moves) moves[mvi++] = mvScale(sigma, lambda=0.5, weight=10.0,tune=true);
 
-for (j in n_branches:1)
+	print(n_branches)
+for (j in 1:n_branches)
 {
         times[j]=psi.branchLength(j)
 
 	first_gamma_param[j] := 1./(sigma/times[j])
 	second_gamma_param[j] := 1./(sigma/times[j])
 
-	rel_branch_rates[j] ~ dnGamma(first_gamma_param[j],second_gamma_param[j])
-	if (initialize_rates) rel_branch_rates[j].setValue(observedBls[j]/ (times[j]/mu) );
+	rel_branch_rates[j] ~ dnGamma(first_gamma_param[j],second_gamma_param[j]);
+	if(initialize_rates && j<n_branches)
+	{
+	rel_branch_rates[j].setValue(observedBls[j]/ (times[j]/mu) );
+	}else
+	{
+	rel_branch_rates[j].setValue((observedBls[left_i]+observedBls[right_i])/ (times[j]/mu) );
+	}
+		
+	#print(j,rel_branch_rates[j],observedBls[j]/ (times[j]/mu),observedBls[j],times[j]) 
 	#moves
 	if (add_moves) moves[mvi++] = mvScale(rel_branch_rates[j], lambda=0.5, weight=1.0,tune=true);
+
 }
 
-for (j in n_branches:1)
-{	
- branch_rates[j] := mu * rel_branch_rates[j] 	
+for (j in 1:n_branches)
+{
+ branch_rates[j] := mu * rel_branch_rates[j]
 }
 
 mean_rt := mean(branch_rates)
-if (initialize_rates) global_rate_mean.setValue(mean_rt);
+#if (initialize_rates) mu.setValue(1.);
 var_rt := var(branch_rates)
+#if (initialize_rates) sigma.setValue(var_rt);
 
 
 extension += "_WNr"
