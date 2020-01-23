@@ -16,13 +16,59 @@ cp ShuffledTrees/proposedTree.dnd SimulatedTrees/
 for i in SimulatedTrees/proposedTree.dnd ; do python Scripts/rescaleTree.py $i 0.03 ; done > statsOnRescaledTrees.txt
 
 # Introducing deviations from the clock
-for i in SimulatedTrees/proposedTree*_rescaled.dnd ; do python Scripts/alterBranchLengths.py $i 0.03 0.1 1.0 0.2 0.01 ${i/.dnd}_altered.dnd n ; done
+for i in SimulatedTrees/proposedTree_rescaled.dnd ; do python Scripts/alterBranchLengths.py $i 0.03 0.1 1.0 0.2 0.01 ${i/.dnd}_altered.dnd n ; done
+
+# We can compare the distributions of branch lengths before and after alterations by looking into statsOnRescaledTrees.txt and statsOnRescaledAlteredTrees.txt (at the end).
 
 # unrooting the tree, because revbayes does not like rooted branch length trees
-for i in SimulatedTrees/extantTree*_rescaled_altered.dnd ; do python Scripts/unrootTree.py $i ; done
+for i in SimulatedTrees/proposedTree_rescaled_altered.dnd ; do python Scripts/unrootTree.py $i ; done
 
-# Get statistics on branch lengths of the altered and unrooted trees
-for i in SimulatedTrees/extantTree*_rescaled_altered_unrooted.dnd ; do python Scripts/getBranchLengthStats.py $i ; done > statsOnRescaledAlteredTrees.txt
+# Simulate alignments
+mkdir Alignments
+cd SimulatedTrees
+for i in proposedTree_rescaled_altered_unrooted.dnd ; do echo "tree_file=\"$i\"; source (\"../Scripts/simu_HKY.Rev\");" | rb ; done
+mv *.fasta ../Alignments
+cd ..
+
+
+# Reconstruction of branch length tree distributions using RevBayes
+echo "aln_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta\"; tree_file=\"SimulatedTrees/proposedTree_rescaled_altered_unrooted.dnd\"; source(\"Scripts/mcmc_JC.Rev\");" | rb
+
+
+#########################################################
+# Now we are going to sample calibrations and constraints
+#########################################################
+
+################# First, calibrations.
+# We get 10 calibrations as in Betts et al. 2018.
+
+# 4 ways of sampling constraints:
+- balanced (both sides of the root)
+- unbalanced (one side of the root only)
+- randomly (all nodes have the same probability to be picked)
+- old-biased (older nodes are more likely to be picked; the weight is according to their order in the list of node ages)
+
+
+# Getting old-biased calibrations, on both sides (balanced):
+python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 y y
+
+# Getting old-biased calibrations, on one side only (unbalanced):
+python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 n y
+
+
+
+#########################################################
+#########################################################
+#########################################################
+#########################################################
+#########################################################
+### Previous plans:
+#########################################################
+#########################################################
+#########################################################
+#########################################################
+
+
 
 
 pick up one larger tree with ~100 leaves. Then consider situations where:
@@ -115,7 +161,7 @@ echo "tree_file=\"SimulatedTrees/extantTree.dnd\"; calibration_file=\"SimulatedT
 #########################################################
 #########################################################
 #########################################################
-### Previous plans:
+### VERY OLD Previous plans:
 #########################################################
 #########################################################
 #########################################################
