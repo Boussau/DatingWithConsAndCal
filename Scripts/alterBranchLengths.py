@@ -7,6 +7,7 @@
 
 from ete3 import Tree, TreeStyle, NodeStyle
 import numpy.random as npr
+import pandas as pd
 import sys
 
 def scaleBranch ( list_of_rates, list_of_times ):
@@ -132,10 +133,18 @@ for n in ultra_tree.traverse(strategy= "preorder"):
 
 
 # Additional tree traversal: we do not want branch lengths under some value.
+# We also compute statistics on the branches
+blAfter=list()
 for n in ultra_tree.traverse(strategy= "preorder"):
-    if n.dist < minimum_value:
-        print(n.dist)
-        n.dist = minimum_value
+    if n.is_root():
+        pass
+    else:
+        if n.dist < minimum_value:
+            n.dist = minimum_value
+        blAfter.append(n.dist)
+
+blAfterDF = pd.DataFrame (blAfter, columns=["blAfter"])
+print(blAfterDF.describe())
 
 # Saving the non-ultrametric tree
 ultra_tree.write(format=5, outfile=outputfile)
