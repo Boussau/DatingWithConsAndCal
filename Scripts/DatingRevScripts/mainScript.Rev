@@ -30,7 +30,7 @@ if (!exists("var_tree_file"))    "ERROR: `var_tree_file` undefined"
 # Options #
 ###########
 handle="test"
-rate_model="strictr"   #"LNr"    #"WNr"
+rate_model="WNr"     #"strictr"   #"LNr"    #"WNr"
 ctmc="BL"
 tree_model="BD"
 constrain=false
