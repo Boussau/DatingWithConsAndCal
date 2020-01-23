@@ -34,6 +34,13 @@ cd ..
 # Reconstruction of branch length tree distributions using RevBayes
 echo "aln_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta\"; tree_file=\"SimulatedTrees/proposedTree_rescaled_altered_unrooted.dnd\"; source(\"Scripts/mcmc_JC.Rev\");" | rb
 
+# Computation of mean and var
+cd Alignments/
+echo "tree_file=\"proposedTree_rescaled_altered_unrooted.dnd.fasta.trees\"; burnin=500 ; thinning=10 ; source(\"../Scripts/DatingRevScripts/computeMeanAndVarBl.Rev\");" | rb
+# this produced proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_meanBL.nex and proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_varBL.nex
+cd ..
+
+
 
 #########################################################
 # Now we are going to sample calibrations and constraints
@@ -54,6 +61,21 @@ python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 y y
 
 # Getting old-biased calibrations, on one side only (unbalanced):
 python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 n y
+
+# Getting constraints by hand.
+# The result is in several files:
+# constraints_10.Rev  constraints_15.Rev  constraints_1.Rev  constraints_5.Rev  constraints_full.txt  constraints_informative.Rev  constraints_uninformative.Rev constraints_0.Rev
+
+
+#########################################################
+# Dating with branch lengths, constraints and calibrations
+#########################################################
+
+
+#### Dating the tree without constraints, with balanced calibrations:
+echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; calibration_file=\"Calibrations_10_y_y/proposedTree_calibrations.Rev\" ; constraint_file=\"Constraints/constraints_0.Rev\" ; clade_file=\"Calibrations_10_y_y/proposedTree_clades.Rev\" ; mean_tree_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_meanBL.nex\" ; var_tree_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_varBL.nex\" ; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
+
+
 
 
 
