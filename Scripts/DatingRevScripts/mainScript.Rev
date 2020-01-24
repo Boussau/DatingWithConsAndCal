@@ -5,6 +5,8 @@ if (!exists("calibration_file"))    "ERROR: `calibration_file` undefined"
 if (!exists("constraint_file"))    "ERROR: `constraint_file` undefined"
 if (!exists("mean_tree_file"))    "ERROR: `mean_tree_file` undefined"
 if (!exists("var_tree_file"))    "ERROR: `var_tree_file` undefined"
+if (!exists("handle"))    "ERROR: `handle` undefined"
+
 
 #if (!exists("job_id"))    "ERROR: `job_id` undefined"
 
@@ -29,7 +31,7 @@ if (!exists("var_tree_file"))    "ERROR: `var_tree_file` undefined"
 ###########
 # Options #
 ###########
-handle="test"
+# handle="test"
 rate_model="WNr"     #"strictr"   #"LNr"    #"WNr"
 ctmc="BL"
 tree_model="BD"
@@ -66,8 +68,10 @@ tree <- readTrees(tree_file)[1]
 
 if (ctmc!="BL")
 {
-alignment_file=handle+".fst"
-data <- readDiscreteCharacterData(alignment_file)
+  print("ERROR: this script has not been tested with the alignment.")
+  exit(-1)
+  alignment_file=handle+".fst"
+  data <- readDiscreteCharacterData(alignment_file)
 }
 
 ###########
