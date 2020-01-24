@@ -71,10 +71,13 @@ python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 n y
 # Dating with branch lengths, constraints and calibrations
 #########################################################
 
+mkdir OutputDating
 
 #### Dating the tree without constraints, with balanced calibrations:
-echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; calibration_file=\"Calibrations_10_y_y/proposedTree_calibrations.Rev\" ; constraint_file=\"Constraints/constraints_0.Rev\" ; clade_file=\"Calibrations_10_y_y/proposedTree_clades.Rev\" ; mean_tree_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_meanBL.nex\" ; var_tree_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_varBL.nex\" ; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
+echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; calibration_file=\"Calibrations_10_y_y/proposedTree_calibrations.Rev\" ; constraint_file=\"Constraints/constraints_0.Rev\" ; clade_file=\"Calibrations_10_y_y/proposedTree_clades.Rev\" ; mean_tree_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_meanBL.nex\" ; var_tree_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_varBL.nex\" handle=\"OutputDating/Cal_10_y_y_Cons_0\"; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
 
+#### Dating the tree without constraints, with unbalanced calibrations:
+echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; calibration_file=\"Calibrations_10_n_y/proposedTree_calibrations.Rev\" ; constraint_file=\"Constraints/constraints_0.Rev\" ; clade_file=\"Calibrations_10_y_y/proposedTree_clades.Rev\" ; mean_tree_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_meanBL.nex\" ; var_tree_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_varBL.nex\" handle=\"OutputDating/Cal_10_n_y_Cons_0\"; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
 
 
 
