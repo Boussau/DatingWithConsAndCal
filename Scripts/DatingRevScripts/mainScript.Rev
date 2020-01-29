@@ -8,26 +8,6 @@ if (!exists("var_tree_file"))    "ERROR: `var_tree_file` undefined"
 if (!exists("handle"))    "ERROR: `handle` undefined"
 
 
-#if (!exists("job_id"))    "ERROR: `job_id` undefined"
-
-
-
-# settings
-#out_prefix = job_id
-#out_fp = "output/"
-
-#source("scripts/readTreeAndAlignmentAltered.Rev")
-#source("scripts/substitutionModelJC69.Rev")
-#source("scripts/treeModelConstrained.Rev")
-#source(clade_file)
-#source(calibration_file)
-#source("scripts/UnExp.Rev")
-#source("scripts/CTMCUnExp.Rev")
-#source("scripts/MCMCCalibratedConstrainedUnExp.Rev")
-
-
-
-
 ###########
 # Options #
 ###########
@@ -54,17 +34,16 @@ initialize_rates=true
 #reading bug fix
 var_scaling=1
 
-#inital root height to control time units
-# initial_root_height=1.8
-
 #calibrations
 calib_file=calibration_file
+
 #constraints
 cons_file=constraint_file
 
 
 tree <- readTrees(tree_file)[1]
-##tree.makeUltrametric()
+
+print ("\t\tRoot age : " + tree.rootAge())
 
 if (ctmc!="BL")
 {
@@ -90,9 +69,18 @@ taxa <- tree.taxa()
 ##############
 # Root Prior #
 ##############
-root_time ~ dnExp(1)
 
-root_time.setValue(tree.rootAge())
+age_fossil_root <- tree.rootAge() # constant node corresponding to the (true) age of the root
+width_age_prior_root <- age_fossil_root / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+
+root_age_min <- age_fossil_root - width_age_prior_root
+root_age_max <- age_fossil_root + width_age_prior_root
+
+root_time_real ~ dnUniform(root_age_min, root_age_max)
+
+root_time := abs( root_time_real )
+
+root_time_real.setValue(tree.rootAge())
 
 ################
 # Constraints  #
@@ -110,7 +98,7 @@ print(psi)
 ### add some moves that change the ages of the nodes in the tree
 if (time_moves)
 {
-        moves[mvi++] = mvScale(root_time, weight=1.0, lambda=0.1)
+        moves[mvi++] = mvScale(root_time_real, weight=1.0, lambda=0.1)
         moves[mvi++] = mvSubtreeScale(psi, weight=1.0*n_branches)
         moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=1.0*n_branches)
         moves[mvi++] = mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*n_branches)
