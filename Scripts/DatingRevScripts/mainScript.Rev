@@ -15,7 +15,7 @@ if (!exists("handle"))    "ERROR: `handle` undefined"
 rate_model="WNr"     #"strictr"   #"LNr"    #"WNr"
 ctmc="BL"
 tree_model="BD"
-constrain=false
+constrain=true
 
 extension = ""
 
