@@ -1,0 +1,6 @@
+*.trees
+*.log
+BUP*
+.RData
+*/history.txt
+
