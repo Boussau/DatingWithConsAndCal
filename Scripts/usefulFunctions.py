@@ -17,7 +17,6 @@ def readTreeFromFile(file):
     return t
 
 
-
 def getMRCA(t, species_list):
     nodes = list()
     for i in range(len(species_list)):
