@@ -79,13 +79,16 @@ launchDatingBalanced.sh
 # dating the tree with unbalanced calibrations and varying numbers of constraints:
 launchDatingUnbalanced.sh
 
-
+# dating the tree with 5 informative or uninformative constraints
+launchDatingInformativeUninformative.sh
 
 
 #########################################################
 ## Analysing the dated trees
 #########################################################
 ./launchAnalysis.sh > resultAllTrees.txt
+
+./launchAnalysisInfoUninfo.sh > resultAllTrees.txt
 
 
 #########################################################
