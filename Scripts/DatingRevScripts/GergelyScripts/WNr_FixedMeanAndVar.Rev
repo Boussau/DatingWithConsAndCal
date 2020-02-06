@@ -1,0 +1,46 @@
+########
+# WN  #
+########
+
+mu <- 0.03
+if (initialize_rates) mu <- 1.0 #.setValue(1)#mean_tree_root_age/tree.rootAge());
+
+sigma ~ dnExp(0.5)
+
+	print(n_branches)
+for (j in 1:n_branches)
+{
+        times[j]=psi.branchLength(j)
+
+	first_gamma_param[j] := 1./(sigma/times[j])
+	second_gamma_param[j] := 1./(sigma/times[j])
+
+	rel_branch_rates[j] ~ dnGamma(first_gamma_param[j],second_gamma_param[j]);
+	if(initialize_rates && j<n_branches)
+	{
+	rel_branch_rates[j].setValue(observedBls[j]/ (times[j]/mu) );
+	}else
+	{
+	rel_branch_rates[j].setValue((observedBls[left_i]+observedBls[right_i])/ (times[j]/mu) );
+	}
+
+	if (add_moves) moves[mvi++] = mvScale(rel_branch_rates[j], lambda=0.5, weight=1.0,tune=true);
+
+}
+
+for (j in 1:n_branches)
+{
+ branch_rates[j] := mu * rel_branch_rates[j]
+}
+
+mean_rt := mean(branch_rates)
+#if (initialize_rates) mu.setValue(1.);
+var_rt := var(branch_rates)
+#if (initialize_rates) sigma.setValue(var_rt);
+
+
+extension += "_WNr"
+
+########
+# WN #
+########
