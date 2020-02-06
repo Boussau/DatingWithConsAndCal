@@ -1,0 +1,21 @@
+echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; output_file=\"Alignment_WNr/alignment.fasta\"; source(\"Scripts/simulateWNr.Rev\");" | rb
+
+RevBayes version (1.0.12)
+Build from dev_boussau (8f6956) on vendredi 6 décembre 2019, 17:46:02 (UTC+0100)
+
+Visit the website www.RevBayes.com for more information about RevBayes.
+
+RevBayes is free software released under the GPL license, version 3. Type 'license()' for details.
+
+To quit RevBayes type 'quit()' or 'q()'.
+
+
+>    Processing file "Scripts/simulateWNr.Rev"
+   Attempting to read the contents of file "proposedTree.dnd"
+   Successfully read file
+202
+Rate Mean: 
+0.03037212
+Rate Variance: 
+0.0003096647
+
