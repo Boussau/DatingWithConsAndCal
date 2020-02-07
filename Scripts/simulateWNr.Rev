@@ -1,0 +1,92 @@
+##################
+# WN simulation  #
+##################
+
+################
+# Read the tree
+
+# print errors for undefined variables
+if (!exists("tree_file"))    "ERROR: `tree_file` undefined"  # Starting tree
+if (!exists("output_file"))    "ERROR: `output_file` undefined"  # output file
+
+
+tree <- readTrees(tree_file)[1]
+
+# Get some useful variables from the data. We need these later on.
+n_species <- tree.ntips()
+n_branches <- 2*n_species - 2
+taxa <- tree.taxa()
+
+
+################
+# WN rate model
+
+mu <- 0.03
+
+sigma ~ dnExp(3.0)
+
+
+	print(n_branches)
+for (j in 1:n_branches)
+{
+        times[j]=tree.branchLength(j)
+
+	first_gamma_param[j] := 1./(sigma/times[j])
+	second_gamma_param[j] := 1./(sigma/times[j])
+
+	rel_branch_rates[j] ~ dnGamma(first_gamma_param[j],second_gamma_param[j]);
+
+}
+
+for (j in 1:n_branches)
+{
+ branch_rates[j] := mu * rel_branch_rates[j]
+}
+
+mean_rt := mean(branch_rates)
+#if (initialize_rates) mu.setValue(1.);
+var_rt := var(branch_rates)
+#if (initialize_rates) sigma.setValue(var_rt);
+
+print("Rate Mean: ")
+print(mean_rt)
+print("Rate Variance: ")
+print(var_rt)
+
+
+################
+# Simulation of sequence alignment
+
+
+n_sites = 1000
+
+######################
+# Substitution Model #
+######################
+# create a constant variable for the rate matrix
+Q <- fnHKY(kappa=3, baseFrequencies=Simplex(0.18, 0.27, 0.33, 0.22) )
+
+###################
+# Site rate model #
+###################
+sr := fnDiscretizeGamma(shape=0.3, rate=0.3, numCats=20, false)
+
+###################
+# PhyloCTMC Model #
+###################
+# the sequence evolution model
+seq ~ dnPhyloCTMC(tree=tree, Q=Q, siteRates=sr, branchRates=branch_rates, type="DNA", nSites=n_sites)
+
+###################
+# Saving the data #
+###################
+writeFasta(filename=output_file, data=seq)
+
+# you may want to quit RevBayes now
+q()
+
+
+
+########
+# WN #
+########
