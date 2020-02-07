@@ -91,6 +91,90 @@ launchDatingInformativeUninformative.sh
 ./launchAnalysisInfoUninfo.sh > resultAllTrees.txt
 
 
+
+#########################################################
+## Validation test: when the model for simulating rates
+## matches the reconstruction model
+#########################################################
+# We use revbayes to simulate rates along the tree, then
+# sequences.
+
+mkdir Alignment_WNr
+echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; output_file=\"Alignment_WNr/alignment.fasta\"; source(\"Scripts/simulateWNr.Rev\");" | rb
+
+# We have the sequences in Alignment_WNr/alignment.fasta
+
+# Reconstruction of branch length tree distributions using RevBayes
+echo "aln_file=\"Alignment_WNr/alignment.fasta\"; tree_file=\"SimulatedTrees/proposedTree_rescaled_altered_unrooted.dnd\"; source(\"Scripts/mcmc_JC.Rev\");" | rb
+
+# Computation of mean and var
+cd Alignment_WNr/
+echo "tree_file=\"alignment.fasta.trees\"; burnin=500 ; thinning=10 ; source(\"../Scripts/DatingRevScripts/computeMeanAndVarBl.Rev\");" | rb
+# this produced alignment.fasta.trees_meanBL.nex and alignment.fasta.trees_varBL.nex
+cd ..
+
+mkdir OutputDatingWNr
+
+# dating the tree with balanced calibrations and varying numbers of constraints:
+launchDatingBalancedWNr.sh
+
+# dating the tree with unbalanced calibrations and varying numbers of constraints:
+launchDatingUnbalancedWNr.sh
+
+#########################################################
+## Analysing the dated trees
+#########################################################
+./launchAnalysisWNr.sh > resultAllTreesWNr.txt
+
+./launchAnalysisInfoUninfoWNr.sh > resultAllTreesInfoUninfoWNr.txt
+
+# THe 95% HPD still do not contain the true dates 95% of the time...
+# Fixing the rates:
+echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; calibration_file=\"Calibrations_10_y_y/proposedTree_calibrations.Rev\" ; constraint_file=\"Constraints/constraints_0.Rev\" ; clade_file=\"Calibrations_10_y_y/proposedTree_clades.Rev\" ; mean_tree_file=\"Alignment_WNr/alignment.fasta.trees_meanBL.nex\" ; var_tree_file=\"Alignment_WNr/alignment.fasta.trees_varBL.nex\"; handle=\"OutputDatingWNr/Cal_10_y_y_Cons_0_Fixed_rate\"; rate_model=\"WNr_FixedMeanAndVar\"; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
+
+# The results are quite bad, it seems like I can't correctly fix the mean and variance of the rates.
+
+#########################################################
+#########################################################
+#### Another analysis, building the branch length trees with HKY as in the simulation.
+#########################################################
+
+
+# Reconstruction of branch length tree distributions using RevBayes
+echo "aln_file=\"Alignment_WNr/alignment.fasta\"; tree_file=\"SimulatedTrees/proposedTree_rescaled_altered_unrooted.dnd\"; source(\"Scripts/mcmc_HKY.Rev\");" | rb
+
+# We compare the tree reconstructed with HKY to the tree reconstructed using JC
+# not working
+# python Scripts/analyzeMAPTree.py Alignment_WNr/alignment.fasta.tree  Alignment_WNr/alignment.fastaHKY.tree
+
+cd Alignment_WNr/
+echo "tree_file=\"alignment.fastaHKY.trees\"; burnin=500 ; thinning=10 ; source(\"../Scripts/DatingRevScripts/computeMeanAndVarBl.Rev\");" | rb
+# this produced alignment.fastaHKY.trees_meanBL.nex and alignment.fastaHKY.trees_varBL.nex
+cd ..
+
+# Then obtaining a timetree distribution
+echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; calibration_file=\"Calibrations_10_y_y/proposedTree_calibrations.Rev\" ; constraint_file=\"Constraints/constraints_0.Rev\" ; clade_file=\"Calibrations_10_y_y/proposedTree_clades.Rev\" ; mean_tree_file=\"Alignment_WNr/alignment.fastaHKY.trees_meanBL.nex\" ; var_tree_file=\"Alignment_WNr/alignment.fastaHKY.trees_varBL.nex\"; handle=\"OutputDatingWNr/Cal_10_y_y_Cons_0_HKY\"; rate_model=\"WNr\"; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
+
+# Analysis
+python Scripts/analyzeMAPTree.py SimulatedTrees/proposedTree.dnd OutputDatingWNr/Cal_10_y_y_Cons_0_HKY_cons_BD_WNr_BL.tree y
+
+
+#########################################################
+## New analysis: new BD tree, then inference under the same model that was used for simulation.
+## Also, slower rate of evolution.
+#########################################################
+
+
+
+
+
+
+
+
+
+
+
+
 #########################################################
 #########################################################
 #########################################################

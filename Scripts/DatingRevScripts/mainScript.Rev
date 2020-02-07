@@ -6,13 +6,13 @@ if (!exists("constraint_file"))    "ERROR: `constraint_file` undefined"
 if (!exists("mean_tree_file"))    "ERROR: `mean_tree_file` undefined"
 if (!exists("var_tree_file"))    "ERROR: `var_tree_file` undefined"
 if (!exists("handle"))    "ERROR: `handle` undefined"
-
+if (!exists("rate_model"))    "ERROR: `rate_model` undefined"
 
 ###########
 # Options #
 ###########
 # handle="test"
-rate_model="WNr"     #"strictr"   #"LNr"    #"WNr"
+#rate_model="WNr_FixedMeanAndVar" #"WNr"     #"strictr"   #"LNr"    #"WNr"
 ctmc="BL"
 tree_model="BD"
 constrain=true
