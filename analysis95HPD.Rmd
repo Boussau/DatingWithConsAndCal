@@ -1,0 +1,120 @@
+---
+title: "Are 95% HPD intervals correct?"
+output: html_notebook
+---
+
+
+# Inference without constraints
+```{r}
+d <- read.table("testHPD.csv", h=T)
+
+
+```
+
+
+```{r}
+plot(d$true, d$low, pch=20, col=rgb(0,0,1,0.5), xlab="True dates", ylab="95HPD", ylim=c(0,60), xlim=c(0,60))
+points(d$true, d$high, pch=20, col=rgb(1,0,0,0.5))
+segments(d$true, d$low, d$true, d$high, col="black")
+abline(a=0, b=1, col="grey", lwd=2)
+```
+
+
+# Inference with 5 constraints
+
+```{r}
+d <- read.table("testHPD_5Cons.csv", h=T)
+
+```
+
+
+```{r}
+plot(d$true, d$low, pch=20, col=rgb(0,0,1,0.5), xlab="True dates", ylab="95HPD", ylim=c(0,60), xlim=c(0,60))
+points(d$true, d$high, pch=20, col=rgb(1,0,0,0.5))
+segments(d$true, d$low, d$true, d$high, col="black")
+abline(a=0, b=1, col="grey", lwd=2)
+```
+
+
+# Are the parameters of the WNR model inferred well?
+```{r}
+d<- read.table("OutputDatingWNr/Cal_10_y_y_Cons_0_cons_BD_WNr_BL.log", h=T)
+colnames(d)
+```
+
+
+
+# Are the parameters of the WNR model inferred well?
+
+```{r}
+summary(d$mean_rt)
+```
+
+```{r}
+summary(d$var_rt)
+
+```
+
+
+# Other analysis, after fixing the rates
+
+
+```{r}
+d <- read.table("testHPD_FixedRates.csv", h=T)
+
+```
+
+
+```{r}
+plot(d$true, d$low, pch=20, col=rgb(0,0,1,0.5), xlab="True dates", ylab="95HPD", ylim=c(0,60), xlim=c(0,60))
+points(d$true, d$high, pch=20, col=rgb(1,0,0,0.5))
+segments(d$true, d$low, d$true, d$high, col="black")
+abline(a=0, b=1, col="grey", lwd=2)
+```
+
+I guess I did not fix the rates well... Let's check:
+
+
+```{r}
+d<- read.table("OutputDatingWNr/Cal_10_y_y_Cons_0_Fixed_rate_cons_BD_WNr_BL.log", h=T)
+```
+
+
+```{r}
+summary(d$mean_rt)
+```
+
+```{r}
+summary(d$var_rt)
+
+```
+Rates are completely wrong. I guess I don't really understand WN_r!
+
+# Trying to run the analysis under the correct model of sequence evolution: HKY + Gamma20
+
+```{r}
+d <- read.table("testHPD_HKY.csv", h=T)
+
+```
+
+
+```{r}
+plot(d$true, d$low, pch=20, col=rgb(0,0,1,0.5), xlab="True dates", ylab="95HPD", ylim=c(0,60), xlim=c(0,60))
+points(d$true, d$high, pch=20, col=rgb(1,0,0,0.5))
+segments(d$true, d$low, d$true, d$high, col="black")
+abline(a=0, b=1, col="grey", lwd=2)
+```
+
+
+```{r}
+d<- read.table("OutputDatingWNr/Cal_10_y_y_Cons_0_HKY_cons_BD_WNr_BL.log", h=T)
+```
+
+```{r}
+summary(d$mean_rt)
+```
+
+```{r}
+summary(d$var_rt)
+
+```
