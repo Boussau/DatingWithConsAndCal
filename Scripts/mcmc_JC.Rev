@@ -5,7 +5,7 @@
 #
 ################################################################################
 
-
+num_generations = 20000
 ### Read in sequence data for both genes
 data = readDiscreteCharacterData(aln_file)
 print ("\n\tRead alignment")
@@ -75,7 +75,7 @@ print(psi.names())
 # run the analysis
 mymcmc = mcmc(mymodel, moves, monitors)
 
-mymcmc.run(generations=20000)
+mymcmc.run(generations = num_generations)
 
 
 ###################
@@ -90,4 +90,4 @@ map_tree = mapTree(treetrace, aln_file+".tree")
 
 
 # you may want to quit RevBayes now
-q()
+#q()

@@ -69,4 +69,3 @@ for (j in 1:num_branches ) {
 writeNexus(tree_file+"_varBL.nex", MAPtree)
 print("The tree with variance branch lengths has been saved.")
 
-q()
