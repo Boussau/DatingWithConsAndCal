@@ -9,6 +9,11 @@ from sklearn.metrics import mean_squared_error
 
 trueTreeFile=sys.argv[1]
 inferredTreeFile = sys.argv[2]
+verbose = sys.argv[3]
+
+verbose_bool = False
+if "y" in verbose:
+    verbose_bool = True
 
 ###################################################################
 ########################## WARNING ################################
@@ -84,7 +89,11 @@ rmsd_bls = sqrt(mean_squared_error(blsTrue, blsMap))
 tot = 0.0
 HPDMapLen = len(HPDMap)
 HPDSizes = list()
+if verbose_bool:
+    print("true\tlow\thigh")
 for i in range(HPDMapLen):
+    if verbose_bool:
+        print(str(heightsTrue[i]) + "\t" + str(HPDMap[i][0]) + "\t" + str(HPDMap[i][1]) )
     if (heightsTrue[i] >= HPDMap[i][0] and heightsTrue[i] <= HPDMap[i][1]):
         tot = tot + 1.0
         HPDSizes.append(HPDMap[i][1] - HPDMap[i][0])
@@ -112,6 +121,6 @@ numCons = nameSplit[5]
 
 #print("Relaxed clock: Out of " + str(HPDMapLen) +" nodes, "+str(tot) +" were in the 95% HPD, i.e. " + str(100*tot/HPDMapLen) + "%.\n")
 
-
-#print("TreeId\tnumCalib\tnumCons\tbalanced\told_biased\tcorrelation\trmsd\tcor_bls\trmsd_bls\tnum_nodes\tnumInHPD\tfracInHPD\tpercent0\tpercent25\tpercent50\tpercents75\tpercent100" )
+if verbose_bool:
+    print("TreeId\tnumCalib\tnumCons\tbalanced\told_biased\tcorrelation\trmsd\tcor_bls\trmsd_bls\tnum_nodes\tnumInHPD\tfracInHPD\tpercent0\tpercent25\tpercent50\tpercents75\tpercent100" )
 print(numTree+"\t"+numCalib +"\t"+ numCons +"\t"+ balanced +"\t"+ old_biased +"\t"+ str(cor[0]) +"\t"+ str(rmsd) +"\t"+ str(cor_bls[0]) +"\t"+ str(rmsd_bls) +"\t"+ str(HPDMapLen) +"\t"+ str(tot) + "\t" + str(100*tot/HPDMapLen) + "\t"+ str(percents[0]) +"\t"+ str(percents[1]) +"\t"+ str(percents[2]) +"\t"+ str(percents[3]) +"\t"+ str(percents[4]) )
