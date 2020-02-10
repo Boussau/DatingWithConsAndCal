@@ -11,15 +11,17 @@ trees_only = tree_file + "_trees_only.nxs"
 tree_trace = readTreeTrace(tree_file)   #, burnin=burnin, thinning=thinning)
 
 type(tree_trace)
-
+print(tree_trace.size())
+print(tree_trace.getTrees().size())
 writeNexus(trees_only, tree_trace.getTrees())
 
 
 tre = readBranchLengthTrees(trees_only)
 
 index = 1
-for (i in burnin:tre.size()) {
+for (i in 1:tre.size()) { #a burnin of 500 trees has already been done by readTreeTrace
   if (i % thinning == 0) {
+    print(i)
     trees[index] = tre[i]
     index = index + 1
   }
@@ -47,7 +49,7 @@ for (j in 1:num_branches ) {
   bl_squaredmeans[j] <- bl_squaredmeans[j] / (trees.size())
 }
 
-print("\n\t\þBEFORE changing branch lengths")
+print("\n\t\tBEFORE changing branch lengths")
 print(MAPtree)
 
 for (j in 1:num_branches ) {
@@ -64,8 +66,9 @@ print("The tree with mean branch lengths has been saved.")
 print ("Computing variance tree")
 for (j in 1:num_branches ) {
   MAPtree.setBranchLength(j, abs ( bl_squaredmeans[j] - bl_means[j]^2) )
+  print("VAR: " + bl_squaredmeans[j] + " ; " +  bl_means[j] +" ; " +  bl_means[j]^2 +" ; " + abs ( bl_squaredmeans[j] - bl_means[j]^2))
+
 }
 
 writeNexus(tree_file+"_varBL.nex", MAPtree)
 print("The tree with variance branch lengths has been saved.")
-
