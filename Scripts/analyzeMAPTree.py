@@ -27,7 +27,11 @@ exec (open("/home/boussau/Data/TransferRelated/datingWithTransfers/ReplicatedAna
 # "/home/boussau/Programming/Notebooks/code/functionsToCompareChronograms.py"
 
 # Read true tree
-t = readTreeFromFile(trueTreeFile)
+try:
+    t = readTreeFromFile(trueTreeFile)
+except :
+    print("Format error, trying to read the input tree as a nexus: ")
+    t = readMAPChronogramFromRBOutput(trueTreeFile)
 
 # Need to number the nodes of the tree if they are not numbered already; otherwise we rename.
 t = numberNodes( t )
@@ -113,11 +117,18 @@ numCalib = ""
 numCons = ""
 
 nameSplit = inferredTreeFile.split("_")
-numTree = nameSplit[6] + "_" + nameSplit[7] + "_" + nameSplit[8].replace(".tree", "")
-numCalib = nameSplit[1]
-balanced = nameSplit[2]
-old_biased = nameSplit[3]
-numCons = nameSplit[5]
+if len(nameSplit) > 8:
+    numTree = nameSplit[6] + "_" + nameSplit[7] + "_" + nameSplit[8].replace(".tree", "")
+    numCalib = nameSplit[1]
+    balanced = nameSplit[2]
+    old_biased = nameSplit[3]
+    numCons = nameSplit[5]
+else :
+    numTree = "NA"
+    numCalib = "NA"
+    balanced = "NA"
+    old_biased = "NA"
+    numCons = "NA"
 
 #print("Relaxed clock: Out of " + str(HPDMapLen) +" nodes, "+str(tot) +" were in the 95% HPD, i.e. " + str(100*tot/HPDMapLen) + "%.\n")
 
