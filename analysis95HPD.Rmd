@@ -118,3 +118,21 @@ summary(d$mean_rt)
 summary(d$var_rt)
 
 ```
+
+
+# Trying simulation BD + JC and inference under the same model
+```{r}
+d <- read.table("SimuAndInfer/testHPD_SimuAndINfer.csv", h=T)
+
+```
+
+
+
+```{r}
+plot(d$true, d$low, pch=20, col=rgb(0,0,1,0.5), xlab="True dates", ylab="95HPD", ylim=c(0,60), xlim=c(0,60))
+points(d$true, d$high, pch=20, col=rgb(1,0,0,0.5))
+segments(d$true, d$low, d$true, d$high, col="black")
+abline(a=0, b=1, col="grey", lwd=2)
+```
+
+Basically, it does not work at all...
