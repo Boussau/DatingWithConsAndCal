@@ -160,13 +160,31 @@ python Scripts/analyzeMAPTree.py SimulatedTrees/proposedTree.dnd OutputDatingWNr
 
 
 #########################################################
-## New analysis: new BD tree, then inference under the same model that was used for simulation.
+## New analysis: new BD tree, then inference under the same model that was used for simulation (JC).
 ## Also, slower rate of evolution.
 #########################################################
+mkdir SimuAndInfer
+cd SimuAndInfer
+echo "tree_file=\"../SimulatedTrees/proposedTree.dnd\"; source(\"../Scripts/DatingRevScripts/simulateThenInfer.Rev\");" | rb
+
+# Analysis
+python ../Scripts/analyzeMAPTree.py simulatedTree_BD.nex simuAndinfer_BD_WNr_BL.tree y
+cd ..
 
 
 
+#########################################################
+## New analysis: new BD tree, then inference under the same model that was used for simulation (JC).
+# With UGAMr instead of WNr.
+## Also, slower rate of evolution.
+#########################################################
+mkdir SimuAndInferUGAM
+cd SimuAndInferUGAM
+echo "tree_file=\"../SimulatedTrees/proposedTree.dnd\"; source(\"../Scripts/DatingRevScripts/simulateThenInferUGAM.Rev\");" | rb
 
+# Analysis
+python ../Scripts/analyzeMAPTree.py simulatedTree_BD.nex simuAndinfer_BD_BD_UGAMr_BL.tree y
+cd ..
 
 
 
