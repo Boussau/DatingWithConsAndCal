@@ -254,7 +254,7 @@ taxa <- tree.taxa()
 ##############
 
 age_fossil_root <- tree.rootAge() # constant node corresponding to the (true) age of the root
-width_age_prior_root <- age_fossil_root / 5  # By default we decide that the width of the calibration interval is fossil_age/5
+width_age_prior_root <- age_fossil_root / 20  # By default we decide that the width of the calibration interval is fossil_age/20
 
 root_age_min <- age_fossil_root - width_age_prior_root
 root_age_max <- age_fossil_root + width_age_prior_root
@@ -269,6 +269,21 @@ root_time_real.setValue(tree.rootAge())
 ##############
 # Tree model #
 ##############
+
+
+diversification ~ dnExp(1)
+turnover ~ dnExp(1)
+birth_rate := diversification + turnover
+death_rate := turnover
+#moves
+if (add_moves) moves[mvi++] = mvScale(diversification,lambda=1.0,tune=true,weight=hyper_weigth);
+if (add_moves) moves[mvi++] = mvScale(turnover,lambda=1.0,tune=true,weight=hyper_weigth);
+
+if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa),constraints)
+
+extension=extension+"_BD"
+
 source("../Scripts/DatingRevScripts/GergelyScripts/"+tree_model+".Rev")
 print(psi)
 ### add some moves that change the ages of the nodes in the tree
