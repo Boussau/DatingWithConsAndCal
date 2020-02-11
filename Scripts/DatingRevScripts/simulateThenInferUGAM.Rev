@@ -1,0 +1,382 @@
+#####################################
+# This script performs simulation then inference under the same model
+
+
+# print errors for undefined variables
+if (!exists("tree_file"))    "ERROR: `tree_file` undefined"  # Starting tree
+
+###########
+# Options #
+###########
+#rate_model="UGAMr"
+ctmc="BL"
+tree_model="BD"
+constrain=false
+
+extension = ""
+
+mcmc_length = 300000/6.
+mcmc_burnin = 10000*0
+mcmc_nchains = 1
+mcmc_printgen = 100
+
+time_moves=true
+add_moves=true
+hyper_weigth=3.0
+
+#set initial rates according to initial tree
+initialize_rates=true
+
+#reading bug fix
+var_scaling=1
+
+tree <- readTrees(tree_file)[1]
+
+age_fossil_root <- tree.rootAge() # constant node corresponding to the (true) age of the root
+
+print ("\t\tRoot age : " + age_fossil_root)
+taxa <- tree.taxa()
+
+###############################
+###############################
+# Simulating timetree
+###############################
+###############################
+
+print("\n\t\tSimulating timetree")
+diversification <- 0.5 #~ dnExp(1)
+turnover <- 0.4 #~ dnExp(1)
+birth_rate := diversification + turnover
+death_rate := turnover
+
+if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=age_fossil_root, samplingStrategy="uniform", condition="survival", taxa=taxa)
+if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=age_fossil_root, samplingStrategy="uniform", condition="survival", taxa=taxa),constraints)
+
+extension="_BD"
+
+# Now we have a tree topology that we can use for simulating sequences.
+writeNexus("simulatedTree"+extension +".nex", psi)
+
+clear() # Clearing the workspace
+
+###############################
+###############################
+# Simulating rates along the tree
+###############################
+###############################
+
+print("\n\t\tSimulating rates along the tree")
+extension="_BD"
+tree_file="simulatedTree"+ extension +".nex"
+aln_file="simulatedAlignment"+ extension +".fasta"
+
+heterogeneous_site_rates=false
+
+tree <- readTrees(tree_file)[1]
+
+# Get some useful variables from the data. We need these later on.
+n_species <- tree.ntips()
+n_branches <- 2*n_species - 2
+taxa <- tree.taxa()
+
+
+################
+# UGAM rate model
+
+global_rate_mean <- 0.01 #~ dnExp(1)
+sigma <- 0.05  # ~ dnExp(10.0)
+
+first_gamma_param := 1/sigma
+second_gamma_param := 1/sigma
+
+# each branch rate is drawn from a Gamma
+for (j in n_branches:1)
+{
+        times[j]=tree.branchLength(j)
+	rel_branch_rates[j] ~ dnGamma(first_gamma_param,second_gamma_param)
+}
+
+for (j in n_branches:1)
+{
+ branch_rates[j] := global_rate_mean * rel_branch_rates[j]
+}
+
+mean_rt := mean(branch_rates)
+var_rt := var(branch_rates)
+
+extension += "_UGAMr"
+
+###############################
+###############################
+# Simulation of sequence alignment
+###############################
+###############################
+print("\n\t\tSimulation of sequence alignment")
+n_sites = 1000
+
+######################
+# Substitution Model #
+######################
+# create a constant variable for the rate matrix
+Q <- fnJC(4)
+
+
+###################
+# Site rate model #
+###################
+if (heterogeneous_site_rates) {
+  sr := fnDiscretizeGamma(shape=0.3, rate=0.3, numCats=20, false)
+}
+
+###################
+# PhyloCTMC Model #
+###################
+# the sequence evolution model
+if (heterogeneous_site_rates) {
+  seq ~ dnPhyloCTMC(tree=tree, Q=Q, siteRates=sr, branchRates=branch_rates, type="DNA", nSites=n_sites)
+} else {
+  seq ~ dnPhyloCTMC(tree=tree, Q=Q, branchRates=branch_rates, type="DNA", nSites=n_sites)
+}
+###################
+# Saving the data #
+###################
+writeFasta(filename=aln_file, data=seq)
+
+
+
+###############################
+###############################
+# Inferring branch lengths trees
+###############################
+###############################
+print("\n\t\tInferring branch lengths trees")
+source("../Scripts/mcmc_JC.Rev")
+
+clear()
+
+###############################
+###############################
+# Getting mean and variance BLs
+###############################
+###############################
+print("\n\t\tGetting mean and variance BLs")
+extension = "_BD"
+aln_file = "simulatedAlignment" + extension + ".fasta"
+tree_file = aln_file+".trees"
+burnin = 500
+thinning = 10
+source("../Scripts/DatingRevScripts/computeMeanAndVarBl.Rev")
+
+clear()
+
+###############################
+###############################
+# Inference of dated time trees
+###############################
+###############################
+
+print("\n\t\tInference of dated time trees")
+
+extension = "_BD"
+tree_file = "simulatedTree" + extension + ".nex"
+mean_tree_file = "simulatedAlignment" + extension + ".fasta.trees" + "_meanBL.nex"
+var_tree_file = "simulatedAlignment" + extension + ".fasta.trees" + "_varBL.nex"
+handle = "simuAndinfer"
+rate_model = "WNr"
+
+# print errors for undefined variables
+if (!exists("tree_file"))    "ERROR: `tree_file` undefined"  # Starting tree
+if (!exists("mean_tree_file"))    "ERROR: `mean_tree_file` undefined"
+if (!exists("var_tree_file"))    "ERROR: `var_tree_file` undefined"
+if (!exists("handle"))    "ERROR: `handle` undefined"
+if (!exists("rate_model"))    "ERROR: `rate_model` undefined"
+
+###########
+# Options #
+###########
+# handle="test"
+#rate_model="WNr_FixedMeanAndVar" #"WNr"     #"strictr"   #"LNr"    #"WNr"
+ctmc="BL"
+tree_model="BD"
+constrain = false
+
+extension = ""
+
+mcmc_length = 300000/6.
+mcmc_burnin = 10000*0
+mcmc_nchains = 1
+mcmc_printgen = 100
+
+time_moves=true
+add_moves=true
+hyper_weigth=3.0
+
+#set initial rates according to initial tree
+initialize_rates=true
+
+#reading bug fix
+var_scaling=1
+
+tree <- readTrees(tree_file)[1]
+
+print ("\t\tRoot age : " + tree.rootAge())
+
+if (ctmc!="BL")
+{
+  print("ERROR: this script has not been tested with the alignment.")
+  exit(-1)
+  alignment_file=handle+".fst"
+  data <- readDiscreteCharacterData(alignment_file)
+}
+
+###########
+# Options #
+###########
+
+# set my move index
+mvi = 1
+mni = 0
+
+# Get some useful variables from the data. We need these later on.
+n_species <- tree.ntips()
+n_branches <- 2*n_species - 2
+taxa <- tree.taxa()
+
+##############
+# Root Prior #
+##############
+
+age_fossil_root <- tree.rootAge() # constant node corresponding to the (true) age of the root
+width_age_prior_root <- age_fossil_root / 20  # By default we decide that the width of the calibration interval is fossil_age/20
+
+root_age_min <- age_fossil_root - width_age_prior_root
+root_age_max <- age_fossil_root + width_age_prior_root
+
+root_time_real ~ dnUniform(root_age_min, root_age_max)
+
+root_time := abs( root_time_real )
+
+root_time_real.setValue(tree.rootAge())
+
+
+##############
+# Tree model #
+##############
+
+
+diversification ~ dnExp(1)
+turnover ~ dnExp(1)
+birth_rate := diversification + turnover
+death_rate := turnover
+#moves
+if (add_moves) moves[mvi++] = mvScale(diversification,lambda=1.0,tune=true,weight=hyper_weigth);
+if (add_moves) moves[mvi++] = mvScale(turnover,lambda=1.0,tune=true,weight=hyper_weigth);
+
+if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
+if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa),constraints)
+
+extension=extension+"_BD"
+
+source("../Scripts/DatingRevScripts/GergelyScripts/"+tree_model+".Rev")
+print(psi)
+### add some moves that change the ages of the nodes in the tree
+if (time_moves)
+{
+        moves[mvi++] = mvScale(root_time_real, weight=1.0, lambda=0.1)
+        moves[mvi++] = mvSubtreeScale(psi, weight=1.0*n_branches)
+        moves[mvi++] = mvNodeTimeSlideUniform(psi, weight=1.0*n_branches)
+        moves[mvi++] = mvLayeredScaleProposal(tree=psi, lambda=0.1, tune=true, weight=1.0*n_branches)
+}
+
+# WE DON'T DO THAT : We rescale the tree so that the root age is initial_root_height
+# tree.rescale( initial_root_height / tree.rootAge() )
+
+# We fix the tree
+psi.setValue(tree)
+
+print(psi)
+
+#read mean and var bls
+if (ctmc=="BL" || initialize_rates) {
+  mean_tree <- readTrees(mean_tree_file)[1]
+  var_tree <- readTrees(var_tree_file)[1]
+  source("../Scripts/DatingRevScripts/readBLTrees.Rev");
+}
+
+
+################
+# Rate Model   #
+################
+
+global_rate_mean <- 0.01 #~ dnExp(1)
+sigma <- 0.05  # ~ dnExp(10.0)
+
+first_gamma_param := 1/sigma
+second_gamma_param := 1/sigma
+# moves
+if (add_moves) moves[mvi++] = mvScale(global_rate_mean, lambda=0.5, weight=10.0);
+if (add_moves) moves[mvi++] = mvScale(sigma, lambda=0.5, weight=10.0);
+
+# each branch rate is drawn from a Gamma
+for (j in n_branches:1)
+{
+        times[j]=psi.branchLength(j)
+	rel_branch_rates[j] ~ dnGamma(first_gamma_param,second_gamma_param)
+	if (initialize_rates) rel_branch_rates[j].setValue(observedBls[j]/times[j]/global_rate_mean);
+	# moves
+	if (add_moves) moves[mvi++] = mvScale(rel_branch_rates[j], lambda=0.5, weight=1.0,tune=true);
+}
+
+for (j in n_branches:1)
+{
+ branch_rates[j] := global_rate_mean * rel_branch_rates[j]
+}
+
+mean_rt := mean(branch_rates)
+var_rt := var(branch_rates)
+
+extension += "_UGAMr"
+
+################
+# CTMC         #
+################
+source("../Scripts/DatingRevScripts/GergelyScripts/"+ctmc+".Rev")
+
+#some things we would like to see in the .log
+for(i in 1:n_branches)
+{
+  ages[i] := psi.nodeAge(i)
+  ages2[i] := tree.nodeAge(i)
+}
+print(ages)
+print(ages2)
+
+#############
+# THE Model #
+#############
+mymodel = model(branch_rates)
+
+fname_stem=handle+extension
+monitors[++mni] = mnModel(filename=fname_stem+".log",printgen=10, separator = TAB)
+monitors[++mni] = mnStochasticVariable(filename=fname_stem+"_Stoch.log",printgen=10)
+
+monitors[++mni] = mnExtNewick(filename=fname_stem+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates)
+monitors[++mni] = mnScreen(printgen=mcmc_printgen, root_time, ages[103], ages[110], ages[150])
+
+#mymcmc = mcmcmc(mymodel, monitors, moves, nruns=2, nchains=3)
+
+mymcmc = mcmc(mymodel, monitors, moves, nruns=1)
+
+if (mcmc_burnin>0) mymcmc.burnin(generations=mcmc_burnin,tuningInterval=mcmc_burnin);
+mymcmc.run(generations=mcmc_length)
+
+mymcmc.operatorSummary()
+
+# Now, we will analyze the tree output.
+# Let us start by reading in the tree trace
+treetrace = readTreeTrace(fname_stem+".trees", treetype="clock", burnin=0.25)
+
+map_tree = mapTree(treetrace,fname_stem+".tree")
+
+# you may want to quit RevBayes now
+q()
