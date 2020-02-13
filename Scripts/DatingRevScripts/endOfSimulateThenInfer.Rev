@@ -1,172 +1,3 @@
-#####################################
-# This script performs simulation then inference under the same model
-
-
-# print errors for undefined variables
-if (!exists("tree_file"))    "ERROR: `tree_file` undefined"  # Starting tree
-
-###########
-# Options #
-###########
-#rate_model="WNr"
-ctmc="BL"
-tree_model="BD"
-constrain=false
-
-extension = ""
-
-
-#set initial rates according to initial tree
-initialize_rates=true
-
-#reading bug fix
-var_scaling=1
-
-tree <- readTrees(tree_file)[1]
-
-age_fossil_root <- tree.rootAge() # constant node corresponding to the (true) age of the root
-
-print ("\t\tRoot age : " + age_fossil_root)
-taxa <- tree.taxa()
-
-###############################
-###############################
-# Simulating timetree
-###############################
-###############################
-
-print("\n\t\tSimulating timetree")
-diversification <- 0.5 #~ dnExp(1)
-turnover <- 0.4 #~ dnExp(1)
-birth_rate := diversification + turnover
-death_rate := turnover
-
-if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=age_fossil_root, samplingStrategy="uniform", condition="survival", taxa=taxa)
-if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=age_fossil_root, samplingStrategy="uniform", condition="survival", taxa=taxa),constraints)
-
-extension="_BD"
-
-# Now we have a tree topology that we can use for simulating sequences.
-writeNexus("simulatedTree"+extension +".nex", psi)
-
-clear() # Clearing the workspace
-
-###############################
-###############################
-# Simulating rates along the tree
-###############################
-###############################
-
-print("\n\t\tSimulating rates along the tree")
-extension="_BD"
-tree_file="simulatedTree"+ extension +".nex"
-aln_file="simulatedAlignment"+ extension +".fasta"
-
-heterogeneous_site_rates=false
-
-tree <- readTrees(tree_file)[1]
-
-# Get some useful variables from the data. We need these later on.
-n_species <- tree.ntips()
-n_branches <- 2*n_species - 2
-taxa <- tree.taxa()
-
-
-################
-# WN rate model
-
-
-mu ~ dnExp(1.)
-sigma ~ dnExp(10.0)
-
-print("mu parameter: " + mu)
-print("sigma parameter: " + sigma)
-
-for (j in 1:n_branches)
-{
-        times[j]=tree.branchLength(j)
-
-	first_gamma_param[j] := 1./(sigma/times[j])
-	second_gamma_param[j] := 1./(sigma/times[j])
-
-	rel_branch_rates[j] ~ dnGamma(first_gamma_param[j],second_gamma_param[j]);
-
-}
-
-for (j in 1:n_branches)
-{
- branch_rates[j] := mu * rel_branch_rates[j]
-}
-
-mean_rt := mean(branch_rates)
-var_rt := var(branch_rates)
-
-print("Rate Mean: " + mean_rt)
-print("Rate Variance: " + var_rt)
-
-
-###############################
-###############################
-# Simulation of sequence alignment
-###############################
-###############################
-print("\n\t\tSimulation of sequence alignment")
-n_sites = 1000
-
-######################
-# Substitution Model #
-######################
-# create a constant variable for the rate matrix
-Q <- fnJC(4)
-
-
-###################
-# Site rate model #
-###################
-if (heterogeneous_site_rates) {
-  sr := fnDiscretizeGamma(shape=0.3, rate=0.3, numCats=20, false)
-}
-
-###################
-# PhyloCTMC Model #
-###################
-# the sequence evolution model
-if (heterogeneous_site_rates) {
-  seq ~ dnPhyloCTMC(tree=tree, Q=Q, siteRates=sr, branchRates=branch_rates, type="DNA", nSites=n_sites)
-} else {
-  seq ~ dnPhyloCTMC(tree=tree, Q=Q, branchRates=branch_rates, type="DNA", nSites=n_sites)
-}
-###################
-# Saving the data #
-###################
-writeFasta(filename=aln_file, data=seq)
-
-
-
-###############################
-###############################
-# Inferring branch lengths trees
-###############################
-###############################
-print("\n\t\tInferring branch lengths trees")
-source("../Scripts/mcmc_JC.Rev")
-
-clear()
-
-###############################
-###############################
-# Getting mean and variance BLs
-###############################
-###############################
-print("\n\t\tGetting mean and variance BLs")
-extension = "_BD"
-aln_file = "simulatedAlignment" + extension + ".fasta"
-tree_file = aln_file+".trees"
-burnin = 500
-thinning = 10
-source("../Scripts/DatingRevScripts/computeMeanAndVarBl.Rev")
-
-clear()
 
 ###############################
 ###############################
@@ -261,22 +92,22 @@ root_time_real.setValue(tree.rootAge())
 ##############
 # Tree model #
 ##############
-
-
-diversification ~ dnExp(1)
-turnover ~ dnExp(1)
+diversification <- 0.5
+turnover <- 0.4
+#diversification ~ dnExp(1)
+#turnover ~ dnExp(1)
 birth_rate := diversification + turnover
 death_rate := turnover
 #moves
-if (add_moves) moves[mvi++] = mvScale(diversification,lambda=1.0,tune=true,weight=hyper_weigth);
-if (add_moves) moves[mvi++] = mvScale(turnover,lambda=1.0,tune=true,weight=hyper_weigth);
+#if (add_moves) moves[mvi++] = mvScale(diversification,lambda=1.0,tune=true,weight=hyper_weigth);
+#if (add_moves) moves[mvi++] = mvScale(turnover,lambda=1.0,tune=true,weight=hyper_weigth);
 
 if (!constrain) psi ~ dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa)
 if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=death_rate, rho=1.0, rootAge=root_time, samplingStrategy="uniform", condition="survival", taxa=taxa),constraints)
 
 extension=extension+"_BD"
 
-source("../Scripts/DatingRevScripts/GergelyScripts/"+tree_model+".Rev")
+
 print(psi)
 ### add some moves that change the ages of the nodes in the tree
 if (time_moves)
