@@ -7,6 +7,7 @@ if (!exists("mean_tree_file"))    "ERROR: `mean_tree_file` undefined"
 if (!exists("var_tree_file"))    "ERROR: `var_tree_file` undefined"
 if (!exists("handle"))    "ERROR: `handle` undefined"
 if (!exists("rate_model"))    "ERROR: `rate_model` undefined"
+if (!exists("mc3"))    "ERROR: `mc3` undefined"
 
 ###########
 # Options #
@@ -154,6 +155,9 @@ print(ages2)
 #############
 mymodel = model(branch_rates)
 
+if (mc3=="true") {
+  extension=extension+"_MC3"
+}
 fname_stem=handle+extension
 monitors[++mni] = mnModel(filename=fname_stem+".log",printgen=10, separator = TAB)
 monitors[++mni] = mnStochasticVariable(filename=fname_stem+"_Stoch.log",printgen=10)
@@ -161,15 +165,17 @@ monitors[++mni] = mnStochasticVariable(filename=fname_stem+"_Stoch.log",printgen
 monitors[++mni] = mnExtNewick(filename=fname_stem+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates)
 monitors[++mni] = mnScreen(printgen=mcmc_printgen, root_time, ages[103], ages[110], ages[150])
 
-#mymcmc = mcmcmc(mymodel, monitors, moves, nruns=2, nchains=3)
+if (mc3=="true") {
+  mymcmc = mcmcmc(mymodel, monitors, moves, nruns=1, nchains=4, tuneHeat=TRUE)
 
-mymcmc = mcmc(mymodel, monitors, moves, nruns=1)
+} else {
+  mymcmc = mcmc(mymodel, monitors, moves, nruns=1)
+}
 
-if (mcmc_burnin>0) mymcmc.burnin(generations=mcmc_burnin,tuningInterval=mcmc_burnin)
+if (mcmc_burnin>0) mymcmc.burnin(generations=mcmc_burnin,tuningInterval=mcmc_burnin/10)
 mymcmc.operatorSummary()
 
 mymcmc.run(generations=mcmc_length)
-
 mymcmc.operatorSummary()
 
 # Now, we will analyze the tree output.
