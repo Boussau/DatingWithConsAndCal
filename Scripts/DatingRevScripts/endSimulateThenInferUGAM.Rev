@@ -33,7 +33,7 @@ constrain = false
 extension = ""
 
 mcmc_length = 300000/6.
-mcmc_burnin = 10000*0
+mcmc_burnin = 10000*1
 mcmc_nchains = 1
 mcmc_printgen = 100
 
@@ -195,7 +195,9 @@ monitors[++mni] = mnScreen(printgen=mcmc_printgen, root_time, ages[103], ages[11
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=1)
 
-if (mcmc_burnin>0) mymcmc.burnin(generations=mcmc_burnin,tuningInterval=mcmc_burnin);
+if (mcmc_burnin>0) mymcmc.burnin(generations=mcmc_burnin,tuningInterval=mcmc_burnin/10);
+mymcmc.operatorSummary()
+
 mymcmc.run(generations=mcmc_length)
 
 mymcmc.operatorSummary()

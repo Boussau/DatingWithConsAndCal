@@ -138,7 +138,7 @@ if (ctmc=="BL" || initialize_rates) {
 # Rate Model   #
 ################
 
-global_rate_mean ~ dnExp(1)  #<- 0.01 #
+global_rate_mean ~ dnExp(100)  #<- 0.01 #
 sigma ~ dnExp(10.0) # <- 0.05  #
 
 first_gamma_param := 1/sigma
@@ -196,9 +196,10 @@ monitors[++mni] = mnScreen(printgen=mcmc_printgen, root_time, ages[103], ages[11
 
 mymcmc = mcmc(mymodel, monitors, moves, nruns=1)
 
-if (mcmc_burnin>0) mymcmc.burnin(generations=mcmc_burnin,tuningInterval=mcmc_burnin/10);
-mymcmc.run(generations=mcmc_length)
+if (mcmc_burnin>0) mymcmc.burnin(generations=mcmc_burnin,tuningInterval=mcmc_burnin/10)
+mymcmc.operatorSummary()
 
+mymcmc.run(generations=mcmc_length)
 mymcmc.operatorSummary()
 
 # Now, we will analyze the tree output.

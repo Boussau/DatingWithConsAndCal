@@ -5,16 +5,16 @@
 
 global_rate_mean ~ dnExp(1)
 if (initialize_rates) global_rate_mean.setValue(mean_tree_root_age/tree.rootAge());
-
+print("global_rate_mean: "+global_rate_mean)
 sigma ~ dnExp(10.0)
-	
+
 first_gamma_param := 1/sigma
 second_gamma_param := 1/sigma
 # moves
-if (add_moves) moves[mvi++] = mvScale(global_rate_mean, lambda=0.5, weight=10.0);
-if (add_moves) moves[mvi++] = mvScale(sigma, lambda=0.5, weight=10.0);
+if (add_moves) moves[mvi++] = mvScaleBactrian(global_rate_mean, lambda=0.5, weight=10.0);
+if (add_moves) moves[mvi++] = mvScaleBactrian(sigma, lambda=0.5, weight=10.0);
 
-# use a discretized lognormal
+# use a Gamma distribution on rates
 for (j in n_branches:1)
 {
         times[j]=psi.branchLength(j)
@@ -25,14 +25,14 @@ for (j in n_branches:1)
 }
 
 for (j in n_branches:1)
-{	
- branch_rates[j] := global_rate_mean * rel_branch_rates[j] 	
+{
+ branch_rates[j] := global_rate_mean * rel_branch_rates[j]
 }
 
 mean_rt := mean(branch_rates)
 var_rt := var(branch_rates)
-if (initialize_rates) global_rate_mean.setValue(mean_rt);
-if (initialize_rates) sigma.setValue(var_rt);
+#if (initialize_rates) global_rate_mean.setValue(mean_rt);
+#if (initialize_rates) sigma.setValue(var_rt);
 
 extension += "_UGAMr"
 
