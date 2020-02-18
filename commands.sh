@@ -159,6 +159,22 @@ echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; calibration_file=\"Calibrat
 python Scripts/analyzeMAPTree.py SimulatedTrees/proposedTree.dnd OutputDatingWNr/Cal_10_y_y_Cons_0_HKY_cons_BD_WNr_BL.tree y
 
 
+# Then obtaining a timetree distribution under UGAMr
+echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; calibration_file=\"Calibrations_10_y_y/proposedTree_calibrations.Rev\" ; constraint_file=\"Constraints/constraints_0.Rev\" ; clade_file=\"Calibrations_10_y_y/proposedTree_clades.Rev\" ; mean_tree_file=\"Alignment_WNr/alignment.fastaHKY.trees_meanBL.nex\" ; var_tree_file=\"Alignment_WNr/alignment.fastaHKY.trees_varBL.nex\"; handle=\"OutputDatingWNr/Cal_10_y_y_Cons_0_HKY\"; rate_model=\"UGAMr\"; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
+
+# Analysis
+python Scripts/analyzeMAPTree.py SimulatedTrees/proposedTree.dnd OutputDatingWNr/Cal_10_y_y_Cons_0_HKY_cons_BD_UGAMr_BL.tree y
+
+# Did not mix well ESS global_rate_mean=15.
+
+#########################################
+# Then obtaining a timetree distribution under UGAMr
+echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; calibration_file=\"Calibrations_10_y_y/proposedTree_calibrations.Rev\" ; constraint_file=\"Constraints/constraints_0.Rev\" ; clade_file=\"Calibrations_10_y_y/proposedTree_clades.Rev\" ; mean_tree_file=\"Alignment_WNr/alignment.fastaHKY.trees_meanBL.nex\" ; var_tree_file=\"Alignment_WNr/alignment.fastaHKY.trees_varBL.nex\"; handle=\"OutputDatingWNr/Cal_10_y_y_Cons_0_HKY\"; rate_model=\"UGAMr\"; mc3=\"true\"; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb
+
+
+
+
+
 #########################################################
 ## New analysis: new BD tree, then inference under the same model that was used for simulation (JC).
 ## Also, slower rate of evolution.
@@ -182,15 +198,71 @@ mkdir SimuAndInferUGAM
 cd SimuAndInferUGAM
 echo "tree_file=\"../SimulatedTrees/proposedTree.dnd\"; source(\"../Scripts/DatingRevScripts/simulateThenInferUGAM.Rev\");" | rb
 
+# When we relaunch the analysis:
+echo "tree_file=\"../SimulatedTrees/proposedTree.dnd\"; source(\"../Scripts/DatingRevScripts/endSimulateThenInferUGAM.Rev\");" | rb
+
+
 # Analysis
 python ../Scripts/analyzeMAPTree.py simulatedTree_BD.nex simuAndinfer_BD_BD_UGAMr_BL.tree y
 cd ..
 
+# Works!!!!!
+
+
+#########################################################
+## Same thing, but we estimate the UGAM parameters
+#########################################################
+
+cd SimuAndInferUGAM
+echo "tree_file=\"../SimulatedTrees/proposedTree.dnd\"; source(\"../Scripts/DatingRevScripts/endSimulateThenInferUGAM_InferUGAMParameters.Rev\");" | rb
+
+
+# Analysis
+python ../Scripts/analyzeMAPTree.py simulatedTree_BD.nex simuAndinferInferUGAMParameters_BD_BD_UGAMr_BL.tree y
+cd ..
+
+
+#########################################################
+## Same thing, but we use UGAM, not UGAMr.
+#########################################################
+
+cd SimuAndInferUGAM
+echo "tree_file=\"../SimulatedTrees/proposedTree.dnd\"; source(\"../Scripts/DatingRevScripts/endSimulateThenInferUGAMNotUGAMr_InferUGAMParameters.Rev\");" | rb
+
+
+# Analysis
+python ../Scripts/analyzeMAPTree.py simulatedTree_BD.nex simuAndinferInferUGAMParameters_BD_BD_UGAM_BL.tree y
+
+# UGAMr seems to work better, although mixing is slow for the mean rate parameter of UGAMr.
+
+#########################################################
+## UGAMr, but we try Bactrian scale moves on all the parameters of UGAMr.
+#########################################################
+
+cd SimuAndInferUGAM
+echo "tree_file=\"../SimulatedTrees/proposedTree.dnd\"; source(\"../Scripts/DatingRevScripts/endSimulateThenInferUGAM_InferUGAMParametersBactrian.Rev\");" | rb
+
+
+# Analysis
+python ../Scripts/analyzeMAPTree.py simulatedTree_BD.nex simuAndinferInferUGAMrParametersBactrian_BD_BD_UGAMr_BL.tree y
+
+
+
+# Convergence sucks for global_mean_rate, even though our prior is good (centered on the true value).
+
+#########################################################
+## UGAMr, Bactrian scale moves on all the parameters of UGAMr, and MC3.
+#########################################################
 
 
 
 
+echo "tree_file=\"../SimulatedTrees/proposedTree.dnd\"; source(\"../Scripts/DatingRevScripts/endSimulateThenInferUGAM_InferUGAMParametersBactrianMC3.Rev\");" | rb
 
+# Analysis
+python ../Scripts/analyzeMAPTree.py simulatedTree_BD.nex simuAndinferInferUGAMrParametersBactrianMC3_BD_BD_UGAMr_BL.tree y
+
+# MC3 works!
 
 
 #########################################################
