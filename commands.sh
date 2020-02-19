@@ -13,7 +13,7 @@ mkdir SimulatedTrees
 cp ShuffledTrees/proposedTree.dnd SimulatedTrees/
 
 # Rescaling the trees
-for i in SimulatedTrees/proposedTree.dnd ; do python Scripts/rescaleTree.py $i 0.03 ; done > statsOnRescaledTrees.txt
+for i in SimulatedTrees/proposedTree.dnd ; do python Scripts/rescaleTree.py $i 0.01 ; done > statsOnRescaledTrees.txt
 
 # Introducing deviations from the clock
 for i in SimulatedTrees/proposedTree_rescaled.dnd ; do python Scripts/alterBranchLengths.py $i 0.03 0.1 1.0 0.2 0.01 ${i/.dnd}_altered.dnd n ; done
@@ -26,7 +26,7 @@ for i in SimulatedTrees/proposedTree_rescaled_altered.dnd ; do python Scripts/un
 # Simulate alignments
 mkdir Alignments
 cd SimulatedTrees
-for i in proposedTree_rescaled_altered_unrooted.dnd ; do echo "tree_file=\"$i\"; source (\"../Scripts/simu_HKY.Rev\");" | rb ; done
+for i in proposedTree_rescaled_altered_unrooted.dnd ; do echo "tree_file=\"$i\"; source (\"../Scripts/simu_HKY_No_Gamma.Rev\");" | rb ; done
 mv *.fasta ../Alignments
 cd ..
 
@@ -36,7 +36,7 @@ echo "aln_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta\"; 
 
 # Computation of mean and var
 cd Alignments/
-echo "tree_file=\"proposedTree_rescaled_altered_unrooted.dnd.fasta.trees\"; burnin=500 ; thinning=10 ; source(\"../Scripts/DatingRevScripts/computeMeanAndVarBl.Rev\");" | rb
+echo "tree_file=\"proposedTree_rescaled_altered_unrooted.dnd.fasta.trees\"; burnin=500 ; thinning=5 ; source(\"../Scripts/DatingRevScripts/computeMeanAndVarBl.Rev\");" | rb
 # this produced proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_meanBL.nex and proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_varBL.nex
 cd ..
 
