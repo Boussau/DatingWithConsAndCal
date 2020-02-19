@@ -70,11 +70,12 @@ python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 n y
 #########################################################
 # Dating with branch lengths, constraints and calibrations
 #########################################################
-
+# We run computations on mellifera.elte.hu
 mkdir OutputDating
 
-# dating the tree with balanced calibrations and varying numbers of constraints:
-launchDatingBalanced.sh
+# dating the tree with balanced calibrations and varying numbers of constraints, on mellifera.elte:
+chmod +x launchDatingBalanced_Elte.sh
+./launchDatingBalanced_Elte.sh
 
 # dating the tree with unbalanced calibrations and varying numbers of constraints:
 launchDatingUnbalanced.sh
