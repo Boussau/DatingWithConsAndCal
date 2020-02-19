@@ -75,7 +75,7 @@ mkdir OutputDating
 
 # dating the tree with balanced calibrations and varying numbers of constraints, on mellifera.elte:
 chmod +x launchDatingBalanced_Elte.sh
-./launchDatingBalanced_Elte.sh
+nohup ./launchDatingBalanced_Elte.sh &
 
 # dating the tree with unbalanced calibrations and varying numbers of constraints:
 launchDatingUnbalanced.sh
