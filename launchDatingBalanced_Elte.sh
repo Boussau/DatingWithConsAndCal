@@ -15,7 +15,7 @@ TASKS="4"
 # comma separated list of partitions
 PARTITIONS="high"
 # threads per instance of program needed
-THREADS="1"
+THREADS="4"
 # expected runtime
 TIME="0"
 # jobname prefix
