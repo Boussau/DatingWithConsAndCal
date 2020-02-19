@@ -28,7 +28,7 @@ PROGRAMS=("bash balancedNoConstraint.sh" "bash balanced1Constraint.sh" "bash bal
 
 #### Dating the tree without constraints, with balanced calibrations:
 for id in "${!PROGRAMS[@]}"; do
-srun --mem-per-cpu=${MEMORY} --ntasks-per-node=4 -n ${TASKS} -c $THREADS -o ${JOBNAME}_%j.jobout -p $PARTITIONS -J ${JOBNAME}_0 --time $TIME -- ${PROGRAMS[$id]} > ${JOBNAME}_${PROGRAMS[$id]}_%j_rb.out &
+srun --mem-per-cpu=${MEMORY} --ntasks-per-node=4 -n ${TASKS} -c $THREADS -o ${JOBNAME}_%j.jobout -p $PARTITIONS -J ${JOBNAME}_0 --time $TIME -- ${PROGRAMS[$id]} > ${JOBNAME}_$id_%j_rb.out &
 sleep 1
 done
 
