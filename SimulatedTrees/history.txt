@@ -1,1 +1,2 @@
 tree_file="proposedTree_rescaled_altered_unrooted.dnd"; source ("../Scripts/simu_HKY.Rev");
+tree_file="proposedTree_rescaled_altered_unrooted.dnd"; source ("../Scripts/simu_HKY_No_Gamma.Rev");
