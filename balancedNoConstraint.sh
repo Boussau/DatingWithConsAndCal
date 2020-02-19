@@ -1,0 +1,2 @@
+echo "tree_file=\"SimulatedTrees/proposedTree.dnd\"; calibration_file=\"Calibrations_10_y_y/proposedTree_calibrations.Rev\" ; constraint_file=\"Constraints/constraints_0.Rev\" ; clade_file=\"Calibrations_10_y_y/proposedTree_clades.Rev\" ; mean_tree_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_meanBL.nex\" ; var_tree_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_varBL.nex\"; handle=\"OutputDating/Cal_10_y_y_Cons_0\"; mc3=\"true\"; source(\"Scripts/DatingRevScripts/mainScript.Rev\");" | rb_icc
+
