@@ -11,7 +11,7 @@
 # If some error happens before srun it will be outputted to $HOME/nohup.out
 #
 # number of tasks for a file (in same order as files)
-TASKS="1"
+TASKS="4"
 # comma separated list of partitions
 PARTITIONS="high"
 # threads per instance of program needed
@@ -25,7 +25,6 @@ MEMORY="1500"
 #in Mb per CPU
 # program to launch
 PROGRAM="bash balancedNoConstraint.sh"
-
 #### Dating the tree without constraints, with balanced calibrations:
 srun --mem-per-cpu=${MEMORY} --ntasks-per-node=4 -n ${TASKS} -c $THREADS -o ${JOBNAME}_%j.jobout -p $PARTITIONS -J ${JOBNAME}_0 --time $TIME -- $PROGRAM > ${JOBNAME}_%j_rb.out &
 sleep 1
