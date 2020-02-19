@@ -11,7 +11,7 @@
 # If some error happens before srun it will be outputted to $HOME/nohup.out
 #
 # number of tasks for a file (in same order as files)
-TASKS="4"
+TASKS="5"
 # comma separated list of partitions
 PARTITIONS="high"
 # threads per instance of program needed
