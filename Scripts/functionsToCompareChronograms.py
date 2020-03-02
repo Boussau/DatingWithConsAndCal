@@ -20,6 +20,13 @@ def readMAPChronogramFromRBOutput (file):
             return Tree(tree)
 
 
+def readAnnotatedChronogramWithoutAnnotations (l):
+    line = l.replace("tree TREE1 = [&R]", "")
+    line = re.sub('\[&index=\d+([,\w=\d,%\.\{\}])*\]', "", line)
+    line = re.sub('\[&branch_rates=\d+([,\w=\d,%\.\{\}e-])*\]', "", line)
+    return Tree(line)
+
+
 def readMAPChronogramFromRBOutputAndExtract95Hpd (file):
     try:
         f=open(file, 'r')
