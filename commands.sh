@@ -76,12 +76,42 @@ mkdir OutputDating
 # dating the tree with balanced calibrations and varying numbers of constraints, on mellifera.elte:
 chmod +x launchDatingBalanced_Elte.sh
 nohup ./launchDatingBalanced_Elte.sh &
+#
+# # dating the tree with unbalanced calibrations and varying numbers of constraints:
+# launchDatingUnbalanced.sh
+#
+# # dating the tree with 5 informative or uninformative constraints
+# launchDatingInformativeUninformative.sh
 
-# dating the tree with unbalanced calibrations and varying numbers of constraints:
-launchDatingUnbalanced.sh
+# Gathering the trees :
+scp mellifera.elte.hu:~/DatingWithConsAndCal/OutputDating/*.trees OutputDating/
+# removing mixed-up lines:
+cd OutputDating
+#for i in *.trees ; do awk '{ if (NF==5) {print} }' $i | awk '{ if (NR<2) { print } else if ($0 ~/;$/) { print } }' > ${i/.trees}noMix.trees; echo $i ; wc -l ${i/.trees}noMix.trees; done
+for i in *.trees ; do python ../Scripts/removeIncorrectLinesFromTrace.py $i ${i/.trees}noMix.trees ; done > outputCleaningTraceFiles
 
-# dating the tree with 5 informative or uninformative constraints
-launchDatingInformativeUninformative.sh
+# control of what happened:
+grep "total" outputCleaningTraceFiles
+# File Cal_10_n_y_Cons_0_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_n_y_Cons_10_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_n_y_Cons_15_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 2
+# File Cal_10_n_y_Cons_1_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 2
+# File Cal_10_n_y_Cons_5_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_0_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_10_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_15_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 62
+# File Cal_10_y_y_Cons_1_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_5_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+
+
+# Then we can make map trees for each file.
+for i in *noMix.trees ; do echo "fname_stem=\"${i/.trees}\" ; source(\"../Scripts/DatingRevScripts/makeMAPTree.Rev\") ;" | rb ; done
+cd ..
+
+
+## Analysing the dated trees
+./launchAnalysis.sh > resultAllTrees.txt
+
 
 #########################################################
 # Additional numbers of runs
@@ -99,13 +129,43 @@ for i in balanced14Constraint.sh balanced13Constraint.sh balanced12Constraint.sh
 nohup ./launchAdditionalUnbalancedJobs_Elte.sh &
 nohup ./launchAdditionalJobs_Elte.sh &
 
+grep -A1 "fracInHPD" resultAllTrees.txt | grep -v "fracInHPD" | grep -v "-" > resultAllTreesExcerpt.txt
+# then analysis in Analysis of constraints vs calibrations.ipynb
+
+
 
 #########################################################
+## Same thing for the comparison of informative and uninformative constraints
+#########################################################
+# Gathering the trees :
+mkdir OutputDatingInfoUninfo
+scp mellifera.elte.hu:~/DatingWithConsAndCal/OutputDatingInfoUninfo/*.trees OutputDatingInfoUninfo/
+# removing mixed-up lines:
+cd OutputDatingInfoUninfo
+#for i in *.trees ; do awk '{ if (NF==5) {print} }' $i | awk '{ if (NR<2) { print } else if ($0 ~/;$/) { print } }' > ${i/.trees}noMix.trees; echo $i ; wc -l ${i/.trees}noMix.trees; done
+for i in *.trees ; do python ../Scripts/removeIncorrectLinesFromTrace.py $i ${i/.trees}noMix.trees ; done > outputCleaningTraceFiles
+
+# control of what happened:
+grep "total" outputCleaningTraceFiles
+# File Cal_10_n_y_Cons_info_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_n_y_Cons_uninfo_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_info_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_uninfo_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+
+# Then we can make map trees for each file.
+for i in *noMix.trees ; do echo "fname_stem=\"${i/.trees}\" ; source(\"../Scripts/DatingRevScripts/makeMAPTree.Rev\") ;" | rb ; done
+cd ..
+
 ## Analysing the dated trees
-#########################################################
-./launchAnalysis.sh > resultAllTrees.txt
+./launchAnalysisInfoUninfo.sh > resultAllTreesInfoUninfo.txt
 
-./launchAnalysisInfoUninfo.sh > resultAllTrees.txt
+grep -A1 "fracInHPD" resultAllTreesInfoUninfo.txt | grep -v "fracInHPD" | grep -v "-" > resultAllTreesInfoUninfoExcerpt.txt
+
+# Adding the data with 0 constraint from the previous experiments
+awk '{ if ($3==0) {print} }' resultAllTreesExcerpt.txt > result0Constraints
+cat result0Constraints resultAllTreesInfoUninfoExcerpt.txt > resultAllTreesInfoUninfoExcerptWith0Constraint.txt
+
+# then analysis in Analysis of constraints vs calibrations.ipynb
 
 
 
