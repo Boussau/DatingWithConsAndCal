@@ -125,8 +125,27 @@ cd ..
 ## Analysing the dated trees
 ./launchAnalysis.sh > resultAllTrees.txt
 
+
+#########################################################
+# Additional numbers of runs
+#########################################################
+cp constraints_full.txt constraints_2.Rev
+#...
+#and then editing by hand in emacs
+
+cat balanced5Constraint.sh | sed 's/5/2/g' > balanced2Constraint.sh
+#...
+# and then:
+
+for i in balanced14Constraint.sh balanced13Constraint.sh balanced12Constraint.sh balanced11Constraint.sh balanced9Constraint.sh balanced8Constraint.sh balanced7Constraint.sh balanced6Constraint.sh balanced4Constraint.sh balanced3Constraint.sh  balanced2Constraint.sh ; do sed 's/10_y_y/10_n_y/g' $i > un${i}; done
+
+nohup ./launchAdditionalUnbalancedJobs_Elte.sh &
+nohup ./launchAdditionalJobs_Elte.sh &
+
 grep -A1 "fracInHPD" resultAllTrees.txt | grep -v "fracInHPD" | grep -v "-" > resultAllTreesExcerpt.txt
 # then analysis in Analysis of constraints vs calibrations.ipynb
+
+
 
 #########################################################
 ## Same thing for the comparison of informative and uninformative constraints
