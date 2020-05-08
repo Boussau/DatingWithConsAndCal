@@ -84,24 +84,37 @@ nohup ./launchDatingBalanced_Elte.sh &
 # launchDatingInformativeUninformative.sh
 
 # Gathering the trees :
-scp mellifera.elte.hu:~/DatingWithConsAndCal/OutputDating/*.trees OutputDating/
+scp -i /home/boussau/.ssh/apismellifera_rsa mellifera.elte.hu:~/DatingWithConsAndCal/OutputDating/*.trees OutputDating/
 # removing mixed-up lines:
 cd OutputDating
 #for i in *.trees ; do awk '{ if (NF==5) {print} }' $i | awk '{ if (NR<2) { print } else if ($0 ~/;$/) { print } }' > ${i/.trees}noMix.trees; echo $i ; wc -l ${i/.trees}noMix.trees; done
 for i in *.trees ; do python ../Scripts/removeIncorrectLinesFromTrace.py $i ${i/.trees}noMix.trees ; done > outputCleaningTraceFiles
 
 # control of what happened:
-grep "total" outputCleaningTraceFiles
 # File Cal_10_n_y_Cons_0_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
 # File Cal_10_n_y_Cons_10_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_n_y_Cons_11_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 5
 # File Cal_10_n_y_Cons_15_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 2
 # File Cal_10_n_y_Cons_1_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 2
+# File Cal_10_n_y_Cons_2_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 12
 # File Cal_10_n_y_Cons_5_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_n_y_Cons_8_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
 # File Cal_10_y_y_Cons_0_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
 # File Cal_10_y_y_Cons_10_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_11_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_12_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 21
+# File Cal_10_y_y_Cons_13_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_14_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
 # File Cal_10_y_y_Cons_15_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 62
 # File Cal_10_y_y_Cons_1_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_2_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_3_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_4_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 79
 # File Cal_10_y_y_Cons_5_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_6_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_7_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_8_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
+# File Cal_10_y_y_Cons_9_cons_BD_UGAMr_BL_MC3.trees : total number of lines that have been removed: 0
 
 
 # Then we can make map trees for each file.
