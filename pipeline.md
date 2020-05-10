@@ -1,77 +1,92 @@
-### We get the trees with empirical dates but shuffled topologies from Dominik in the folder ShuffledTrees
-# We rename the trees to avoid confusing these artificial trees with empirical ones
-python Scripts/renameTips.py ShuffledTrees/shuffle.tree
+# Pipeline used to run the analyses presented in the paper
 
-# then I arbitrarily choose tree 2:
+## Part 1
+
+
+### We get the trees with empirical dates but shuffled topologies from Dominik in the folder ShuffledTrees
+We rename the trees to avoid confusing these artificial trees with empirical ones
+```{bash}
+python Scripts/renameTips.py ShuffledTrees/shuffle.tree
+```
+
+Then I arbitrarily choose tree 2:
+```{bash}
 cd ShuffledTrees
 head -2 shuffle_renamed.dnd | tail -1 > proposedTree.dnd
 figtree proposedTree.dnd& # we got proposedTree.dnd.pdf
 cd ..
+```
 
-# Now we're going to use this tree for the simulation work.
+### Now we're going to use this tree for the simulation work.
+```{bash}
 mkdir SimulatedTrees
 cp ShuffledTrees/proposedTree.dnd SimulatedTrees/
+```
 
-# Rescaling the trees
+Rescaling the trees:
+```{bash}
 for i in SimulatedTrees/proposedTree.dnd ; do python Scripts/rescaleTree.py $i 0.01 ; done > statsOnRescaledTrees.txt
+```
 
-# Introducing deviations from the clock
+Introducing deviations from the clock:
+```{bash}
 for i in SimulatedTrees/proposedTree_rescaled.dnd ; do python Scripts/alterBranchLengths.py $i 0.03 0.1 1.0 0.2 0.01 ${i/.dnd}_altered.dnd n ; done
+```
+(NB: We can compare the distributions of branch lengths before and after alterations by looking into statsOnRescaledTrees.txt and statsOnRescaledAlteredTrees.txt (at the end).)
 
-# We can compare the distributions of branch lengths before and after alterations by looking into statsOnRescaledTrees.txt and statsOnRescaledAlteredTrees.txt (at the end).
-
-# unrooting the tree, because revbayes does not like rooted branch length trees
+Unrooting the tree, because revbayes does not like rooted branch length trees:
+```{bash}
 for i in SimulatedTrees/proposedTree_rescaled_altered.dnd ; do python Scripts/unrootTree.py $i ; done
+```
 
-# Simulate alignments
+Simulating alignments:
+```{bash}
 mkdir Alignments
 cd SimulatedTrees
 for i in proposedTree_rescaled_altered_unrooted.dnd ; do echo "tree_file=\"$i\"; source (\"../Scripts/simu_HKY_No_Gamma.Rev\");" | rb ; done
 mv *.fasta ../Alignments
 cd ..
+```
 
-
-# Reconstruction of branch length tree distributions using RevBayes
+Reconstruction of branch length tree distributions using RevBayes:
+```{bash}
 echo "aln_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta\"; tree_file=\"SimulatedTrees/proposedTree_rescaled_altered_unrooted.dnd\"; source(\"Scripts/mcmc_JC.Rev\");" | rb
+```
 
-# Computation of mean and var
+Computation of mean and var branch lengths:
+```{bash}
 cd Alignments/
 echo "tree_file=\"proposedTree_rescaled_altered_unrooted.dnd.fasta.trees\"; burnin=500 ; thinning=5 ; source(\"../Scripts/DatingRevScripts/computeMeanAndVarBl.Rev\");" | rb
 # this produced proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_meanBL.nex and proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_varBL.nex
 cd ..
+```
 
 
+## Now we are going to sample calibrations and constraints
 
-#########################################################
-# Now we are going to sample calibrations and constraints
-#########################################################
+### First, calibrations.
+We get 10 calibrations as in Betts et al. 2018.
 
-################# First, calibrations.
-# We get 10 calibrations as in Betts et al. 2018.
-
-# 4 ways of sampling constraints:
-- balanced (both sides of the root)
-- unbalanced (one side of the root only)
-- randomly (all nodes have the same probability to be picked)
-- old-biased (older nodes are more likely to be picked; the weight is according to their order in the list of node ages)
-
-
-# Getting old-biased calibrations, on both sides (balanced):
+Getting old-biased calibrations, on both sides (balanced):
+```{bash}
 python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 y y
+```
 
-# Getting old-biased calibrations, on one side only (unbalanced):
+Getting old-biased calibrations, on one side only (unbalanced):
+```{bash}
 python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 n y
+```
 
-# Getting constraints by hand.
-# The result is in several files:
-# constraints_10.Rev  constraints_15.Rev  constraints_1.Rev  constraints_5.Rev  constraints_full.txt  constraints_informative.Rev  constraints_uninformative.Rev constraints_0.Rev
+### Second, we get constraints
+We get constraints by hand.
+The result is in several files: constraints_10.Rev  constraints_15.Rev  constraints_1.Rev  constraints_5.Rev  constraints_full.txt  constraints_informative.Rev  constraints_uninformative.Rev constraints_0.Rev
 
 
-#########################################################
-# Dating with branch lengths, constraints and calibrations
-#########################################################
-# We run computations on mellifera.elte.hu
+## Dating with branch lengths, constraints and calibrations
+
+```{bash}
 mkdir OutputDating
+```
 
 # dating the tree with balanced calibrations and varying numbers of constraints, on mellifera.elte:
 chmod +x launchDatingBalanced_Elte.sh
