@@ -1,5 +1,4 @@
-# What's here
-Scripts and some data used for the test on simulations of dating with calibrations and constraints.
+# Scripts and some data used in the manuscript "Including relative time constraints improves molecular dating"
+Gergely J. Szöllősi, Sebastian Höhna, Tom Williams, Dominik Schrempf, Vincent Daubin, Bastien Boussau
 
-This is work in progress.
-
+Commands used to run the simulations and inference can be found in the file [pipeline.md](pipeline.md)
