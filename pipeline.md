@@ -1,7 +1,6 @@
 # Pipeline used to run the analyses presented in the paper
 
-## Part 1
-
+## Simulating trees and alignments
 
 ### We get the trees with empirical dates but shuffled topologies from Dominik in the folder ShuffledTrees
 We rename the trees to avoid confusing these artificial trees with empirical ones
