@@ -17,38 +17,49 @@ figtree proposedTree.dnd& # we got proposedTree.dnd.pdf
 cd ..
 ```
 
-# Now we're going to use this tree for the simulation work.
+### Now we're going to use this tree for the simulation work.
+```{bash}
 mkdir SimulatedTrees
 cp ShuffledTrees/proposedTree.dnd SimulatedTrees/
+```
 
-# Rescaling the trees
+Rescaling the trees:
+```{bash}
 for i in SimulatedTrees/proposedTree.dnd ; do python Scripts/rescaleTree.py $i 0.01 ; done > statsOnRescaledTrees.txt
+```
 
-# Introducing deviations from the clock
+Introducing deviations from the clock:
+```{bash}
 for i in SimulatedTrees/proposedTree_rescaled.dnd ; do python Scripts/alterBranchLengths.py $i 0.03 0.1 1.0 0.2 0.01 ${i/.dnd}_altered.dnd n ; done
+```
+(NB: We can compare the distributions of branch lengths before and after alterations by looking into statsOnRescaledTrees.txt and statsOnRescaledAlteredTrees.txt (at the end).)
 
-# We can compare the distributions of branch lengths before and after alterations by looking into statsOnRescaledTrees.txt and statsOnRescaledAlteredTrees.txt (at the end).
-
-# unrooting the tree, because revbayes does not like rooted branch length trees
+Unrooting the tree, because revbayes does not like rooted branch length trees:
+```{bash}
 for i in SimulatedTrees/proposedTree_rescaled_altered.dnd ; do python Scripts/unrootTree.py $i ; done
+```
 
-# Simulate alignments
+Simulating alignments:
+```{bash}
 mkdir Alignments
 cd SimulatedTrees
 for i in proposedTree_rescaled_altered_unrooted.dnd ; do echo "tree_file=\"$i\"; source (\"../Scripts/simu_HKY_No_Gamma.Rev\");" | rb ; done
 mv *.fasta ../Alignments
 cd ..
+```
 
-
-# Reconstruction of branch length tree distributions using RevBayes
+Reconstruction of branch length tree distributions using RevBayes:
+```{bash}
 echo "aln_file=\"Alignments/proposedTree_rescaled_altered_unrooted.dnd.fasta\"; tree_file=\"SimulatedTrees/proposedTree_rescaled_altered_unrooted.dnd\"; source(\"Scripts/mcmc_JC.Rev\");" | rb
+```
 
-# Computation of mean and var
+Computation of mean and var branch lengths:
+```{bash}
 cd Alignments/
 echo "tree_file=\"proposedTree_rescaled_altered_unrooted.dnd.fasta.trees\"; burnin=500 ; thinning=5 ; source(\"../Scripts/DatingRevScripts/computeMeanAndVarBl.Rev\");" | rb
 # this produced proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_meanBL.nex and proposedTree_rescaled_altered_unrooted.dnd.fasta.trees_varBL.nex
 cd ..
-
+```
 
 
 #########################################################
