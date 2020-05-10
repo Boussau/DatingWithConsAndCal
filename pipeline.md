@@ -62,36 +62,31 @@ cd ..
 ```
 
 
-#########################################################
-# Now we are going to sample calibrations and constraints
-#########################################################
+## Now we are going to sample calibrations and constraints
 
-################# First, calibrations.
-# We get 10 calibrations as in Betts et al. 2018.
+### First, calibrations.
+We get 10 calibrations as in Betts et al. 2018.
 
-# 4 ways of sampling constraints:
-- balanced (both sides of the root)
-- unbalanced (one side of the root only)
-- randomly (all nodes have the same probability to be picked)
-- old-biased (older nodes are more likely to be picked; the weight is according to their order in the list of node ages)
-
-
-# Getting old-biased calibrations, on both sides (balanced):
+Getting old-biased calibrations, on both sides (balanced):
+```{bash}
 python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 y y
+```
 
-# Getting old-biased calibrations, on one side only (unbalanced):
+Getting old-biased calibrations, on one side only (unbalanced):
+```{bash}
 python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 n y
+```
 
-# Getting constraints by hand.
-# The result is in several files:
-# constraints_10.Rev  constraints_15.Rev  constraints_1.Rev  constraints_5.Rev  constraints_full.txt  constraints_informative.Rev  constraints_uninformative.Rev constraints_0.Rev
+### Second, we get constraints
+We get constraints by hand.
+The result is in several files: constraints_10.Rev  constraints_15.Rev  constraints_1.Rev  constraints_5.Rev  constraints_full.txt  constraints_informative.Rev  constraints_uninformative.Rev constraints_0.Rev
 
 
-#########################################################
-# Dating with branch lengths, constraints and calibrations
-#########################################################
-# We run computations on mellifera.elte.hu
+## Dating with branch lengths, constraints and calibrations
+
+```{bash}
 mkdir OutputDating
+```
 
 # dating the tree with balanced calibrations and varying numbers of constraints, on mellifera.elte:
 chmod +x launchDatingBalanced_Elte.sh
