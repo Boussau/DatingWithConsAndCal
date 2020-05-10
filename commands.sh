@@ -122,9 +122,6 @@ for i in *noMix.trees ; do echo "fname_stem=\"${i/.trees}\" ; source(\"../Script
 cd ..
 
 
-## Analysing the dated trees
-./launchAnalysis.sh > resultAllTrees.txt
-
 
 #########################################################
 # Additional numbers of runs
@@ -141,6 +138,11 @@ for i in balanced14Constraint.sh balanced13Constraint.sh balanced12Constraint.sh
 
 nohup ./launchAdditionalUnbalancedJobs_Elte.sh &
 nohup ./launchAdditionalJobs_Elte.sh &
+
+
+
+## Analysing the dated trees
+./launchAnalysis.sh > resultAllTrees.txt
 
 grep -A1 "fracInHPD" resultAllTrees.txt | grep -v "fracInHPD" | grep -v "-" > resultAllTreesExcerpt.txt
 # then analysis in Analysis of constraints vs calibrations.ipynb
