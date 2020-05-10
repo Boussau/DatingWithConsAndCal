@@ -1,4 +1,0 @@
-python Scripts/analyzeMAPTree.py SimulatedTrees/proposedTree.dnd OutputDatingInfoUninfo/Cal_10_n_y_Cons_info_cons_BD_UGAMr_BL_MC3noMix.tree y
-python Scripts/analyzeMAPTree.py SimulatedTrees/proposedTree.dnd OutputDatingInfoUninfo/Cal_10_n_y_Cons_uninfo_cons_BD_UGAMr_BL_MC3noMix.tree y
-python Scripts/analyzeMAPTree.py SimulatedTrees/proposedTree.dnd OutputDatingInfoUninfo/Cal_10_y_y_Cons_info_cons_BD_UGAMr_BL_MC3noMix.tree y
-python Scripts/analyzeMAPTree.py SimulatedTrees/proposedTree.dnd OutputDatingInfoUninfo/Cal_10_y_y_Cons_uninfo_cons_BD_UGAMr_BL_MC3noMix.tree y
