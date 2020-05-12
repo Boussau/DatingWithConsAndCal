@@ -2,8 +2,19 @@
 
 ## Simulating trees and alignments
 
-### We get the trees with empirical dates but shuffled topologies from Dominik in the folder ShuffledTrees
-We rename the trees to avoid confusing these artificial trees with empirical ones
+### Shuffle a time-tree with realistic empirical dates
+The [time-tree with empirical dates](./ShuffledTrees/Cauchy_mid_post_newick.tre)
+is obtained from Betts et al. (2018).
+
+The tree is shuffled with [ELynx](https://github.com/dschrempf/elynx) version
+0.0.1. Thereby, the set of coalescent times is retained, but the topology is
+shuffled randomly. The following command creates 100 randomly shuffled trees:
+```
+tlynx -v Debug -o shuffle shuffle -n 100 Cauchy_mid_post_newick.tre
+```
+For details, please refer to the [log file](./ShuffledTrees/shuffle.log).
+
+We rename the tips of the trees to avoid confusing these artificial trees with empirical ones
 ```{bash}
 python Scripts/renameTips.py ShuffledTrees/shuffle.tree
 ```
