@@ -111,12 +111,27 @@ if (time_moves)
 # We fix the tree
 psi.setValue(tree)
 
+print("Starting time tree:")
 print(psi)
 
 #read mean and var bls
 if (ctmc=="BL" || initialize_rates) {
   mean_tree <- readTrees(mean_tree_file)[1]
   var_tree <- readTrees(var_tree_file)[1]
+
+  rootId <- tree.getRootIndex()
+  outgroup <- tree.getDescendantTaxa(rootId)
+
+  ### REROOT AND MAKE BIFURCATING
+  mean_tree.reRootAndMakeBifurcating(clade(outgroup))
+  var_tree.reRootAndMakeBifurcating(clade(outgroup))
+
+  ### RENUMBERING
+  mean_tree.renumberNodes(tree)
+  var_tree.renumberNodes(tree)
+
+  print("Tree with Mean Branch Lengths:")
+  print(mean_tree)
   source("Scripts/DatingRevScripts/readBLTrees.Rev");
 }
 
