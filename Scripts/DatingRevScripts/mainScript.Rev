@@ -177,7 +177,7 @@ fname_stem=handle+extension
 monitors[++mni] = mnModel(filename=fname_stem+".log",printgen=10, separator = TAB)
 monitors[++mni] = mnStochasticVariable(filename=fname_stem+"_Stoch.log",printgen=10)
 
-monitors[++mni] = mnExtNewick(filename=fname_stem+".trees", isNodeParameter=FALSE, printgen=10, separator = TAB, tree=psi, branch_rates)
+monitors[++mni] = mnExtNewick(filename=fname_stem+".trees", isNodeParameter=FALSE, printgen=20, separator = TAB, tree=psi, branch_rates)
 monitors[++mni] = mnScreen(printgen=mcmc_printgen, root_time, ages[103], ages[110], ages[150])
 
 if (mc3=="true") {
