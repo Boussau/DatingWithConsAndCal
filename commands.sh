@@ -49,22 +49,9 @@ cd ..
 ################# First, calibrations.
 # We get 10 calibrations as in Betts et al. 2018.
 
-# 4 ways of sampling constraints:
-- balanced (both sides of the root)
-- unbalanced (one side of the root only)
-- randomly (all nodes have the same probability to be picked)
-- old-biased (older nodes are more likely to be picked; the weight is according to their order in the list of node ages)
-
-
-# Getting old-biased calibrations, on both sides (balanced):
-python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 y y
-
-# Getting old-biased calibrations, on one side only (unbalanced):
-python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 n y
-
 # Getting constraints by hand.
 # The result is in several files:
-# constraints_10.Rev  constraints_15.Rev  constraints_1.Rev  constraints_5.Rev  constraints_full.txt  constraints_informative.Rev  constraints_uninformative.Rev constraints_0.Rev
+# constraints_10.Rev  constraints_15.Rev  constraints_1.Rev  constraints_5.Rev  constraints_full.txt  constraints_informative.Rev  constraints_uninformative.Rev constraints_0.Rev, etc...
 
 
 #########################################################
@@ -120,25 +107,6 @@ for i in *.trees ; do python ../Scripts/removeIncorrectLinesFromTrace.py $i ${i/
 # Then we can make map trees for each file.
 for i in *noMix.trees ; do echo "fname_stem=\"${i/.trees}\" ; source(\"../Scripts/DatingRevScripts/makeMAPTree.Rev\") ;" | rb ; done
 cd ..
-
-
-
-#########################################################
-# Additional numbers of runs
-#########################################################
-cp constraints_full.txt constraints_2.Rev
-#...
-#and then editing by hand in emacs
-
-cat balanced5Constraint.sh | sed 's/5/2/g' > balanced2Constraint.sh
-#...
-# and then:
-
-for i in balanced14Constraint.sh balanced13Constraint.sh balanced12Constraint.sh balanced11Constraint.sh balanced9Constraint.sh balanced8Constraint.sh balanced7Constraint.sh balanced6Constraint.sh balanced4Constraint.sh balanced3Constraint.sh  balanced2Constraint.sh ; do sed 's/10_y_y/10_n_y/g' $i > un${i}; done
-
-nohup ./launchAdditionalUnbalancedJobs_Elte.sh &
-nohup ./launchAdditionalJobs_Elte.sh &
-
 
 
 ## Analysing the dated trees
