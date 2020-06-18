@@ -74,11 +74,11 @@ python Scripts/extractCalibrations.py SimulatedTrees/proposedTree.dnd 10 n y
 mkdir OutputDating
 
 # dating the tree with balanced calibrations and varying numbers of constraints, on mellifera.elte:
-chmod +x launchDatingBalanced_Elte.sh
-nohup ./launchDatingBalanced_Elte.sh &
+chmod +x launchAllBalancedJobs_Elte.sh
+nohup ./launchAllBalancedJobs_Elte.sh &
 #
 # # dating the tree with unbalanced calibrations and varying numbers of constraints:
-# launchDatingUnbalanced.sh
+nohup ./launchAllUnbalancedJobs_Elte.sh &
 #
 # # dating the tree with 5 informative or uninformative constraints
 # launchDatingInformativeUninformative.sh
