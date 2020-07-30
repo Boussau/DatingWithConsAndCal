@@ -1,5 +1,5 @@
 
-mean_tree_root_age=mean_tree.rootAge()
+#mean_tree_root_age=mean_tree.rootAge()
 
 for(i in 1:n_branches)
 {
@@ -7,6 +7,5 @@ for(i in 1:n_branches)
   varbl[i] := var_tree.branchLength(i)/var_scaling
   if (varbl[i]<1e-10) varbl[i]:=1e-10
 }
-
 varbl[i] := var_tree.branchLength(i)/var_scaling
 if (varbl[i]<1e-10) varbl[i]:=1e-10
