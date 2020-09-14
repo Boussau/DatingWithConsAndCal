@@ -300,6 +300,8 @@ if (ctmc=="BL" || initialize_rates) {
 # Rate Model   #
 ################
 
+#global_rate_mean <- 0.01 #~ dnExp(1)
+#sigma <- 0.05  # ~ dnExp(10.0)
 global_rate_mean <- 0.01 #~ dnExp(1)
 sigma <- 0.05  # ~ dnExp(10.0)
 
