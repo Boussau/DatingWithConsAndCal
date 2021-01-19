@@ -27,4 +27,4 @@ for i in range(num):
             os.path.join(out_i, "unbalanced_" + str(j) + ".sh\"")
     with open(os.path.join(folder_with_launchers, "launcher_Rep_" + str(i) + ".sh"), "w") as fout:
         fout.write(lines.replace("\"TOREPLACEWITH28JOBS\"", all_scripts_balanced +
-                                 " " + all_scripts_unbalanced))
+                                 " " + all_scripts_unbalanced).replace("balancedRuns", "Rep_"+str(i)))

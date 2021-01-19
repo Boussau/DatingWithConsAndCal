@@ -3,23 +3,23 @@
 #
 # Usage:
 # 1. place this executable where the input files are
-# 2. make it executable with chmod +x revbayes_starter.sh
-# 3. execute with: nohup ./revbayes_starter.sh &
+# 2. make it executable with chmod +x script_name.sh
+# 3. execute with: nohup ./script_name.sh &
 #
 # Logs:
-# The output will be saved to XXX.jobout
+# The output will be saved to Rep_6.jobout
 # If some error happens before srun it will be outputted to $HOME/nohup.out
 #
 # number of tasks for a file (in same order as files)
-TASKS="28"
+TASKS=("1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1")
 # comma separated list of partitions
-PARTITIONS="high"
+PARTITIONS="normal"
 # threads per instance of program needed
 THREADS="4"
 # expected runtime
 TIME="0"
 # jobname prefix
-JOBNAME="balancedRuns"
+JOBNAME="Rep_6"
 #
 MEMORY="1500"
 #in Mb per CPU
