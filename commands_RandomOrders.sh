@@ -36,7 +36,7 @@ nohup ./launchAllUnbalancedJobsRO_Elte.sh &
 
 # Then we can make map trees for each file.
 cd /scratch/boussau/DatingWithConsAndCal/OutputDatingRandomOrder/RandomConstraintOrders
-for i in Rep_*/*.trees ; do echo "fname_stem=\"${i/.trees}\" ; source(\"../Scripts/DatingRevScripts/makeMAPTree.Rev\") ;" | rb ; done
+for i in Rep_*/*.trees ; do echo "fname_stem=\"${i/.trees}\" ; source(\"../../Scripts/DatingRevScripts/makeMAPTree.Rev\") ;" | rb ; done
 cd ..
 
 
