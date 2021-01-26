@@ -39,6 +39,10 @@ cd /scratch/boussau/DatingWithConsAndCal/OutputDatingRandomOrder/RandomConstrain
 for i in Rep_*/*.trees ; do echo "fname_stem=\"${i/.trees}\" ; source(\"../../Scripts/DatingRevScripts/makeMAPTree.Rev\") ;" | rb ; done
 cd ..
 
+# Transferring the trees to my local computer
+mkdir Rep_0 Rep_1 Rep_2 Rep_3 Rep_4 Rep_5 Rep_6 Rep_7 Rep_8 Rep_9
+for i in Rep* ; do scp mellifera.elte.hu:~/DatingWithConsAndCal/OutputDatingRandomOrder/RandomConstraintOrders/$i/*.tree $i ; done
+
 
 ## Analysing the dated trees
 ./launchAnalysis.sh > resultAllTrees.txt
