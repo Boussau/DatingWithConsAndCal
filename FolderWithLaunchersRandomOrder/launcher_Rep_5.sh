@@ -11,7 +11,7 @@
 # If some error happens before srun it will be outputted to $HOME/nohup.out
 #
 # number of tasks for a file (in same order as files)
-TASKS=("1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1")
+TASKS=("1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" )
 # comma separated list of partitions
 PARTITIONS="med"
 # threads per instance of program needed
@@ -24,7 +24,7 @@ JOBNAME="Rep_5"
 MEMORY="1500"
 #in Mb per CPU
 # program to launch
-PROGRAMS=( "bash RandomConstraintOrders/Rep_5/balanced_1.sh" "bash RandomConstraintOrders/Rep_5/balanced_2.sh" "bash RandomConstraintOrders/Rep_5/balanced_3.sh" "bash RandomConstraintOrders/Rep_5/balanced_4.sh" "bash RandomConstraintOrders/Rep_5/balanced_5.sh" "bash RandomConstraintOrders/Rep_5/balanced_6.sh" "bash RandomConstraintOrders/Rep_5/balanced_7.sh" "bash RandomConstraintOrders/Rep_5/balanced_8.sh" "bash RandomConstraintOrders/Rep_5/balanced_9.sh" "bash RandomConstraintOrders/Rep_5/balanced_10.sh" "bash RandomConstraintOrders/Rep_5/balanced_11.sh" "bash RandomConstraintOrders/Rep_5/balanced_12.sh" "bash RandomConstraintOrders/Rep_5/balanced_13.sh" "bash RandomConstraintOrders/Rep_5/balanced_14.sh"  "bash RandomConstraintOrders/Rep_5/unbalanced_1.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_2.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_3.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_4.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_5.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_6.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_7.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_8.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_9.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_10.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_11.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_12.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_13.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_14.sh")
+PROGRAMS=( "bash RandomConstraintOrders/Rep_5/balanced_10.sh" "bash RandomConstraintOrders/Rep_5/balanced_11.sh" "bash RandomConstraintOrders/Rep_5/balanced_12.sh" "bash RandomConstraintOrders/Rep_5/balanced_13.sh" "bash RandomConstraintOrders/Rep_5/balanced_14.sh"  "bash RandomConstraintOrders/Rep_5/unbalanced_1.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_2.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_3.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_4.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_5.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_6.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_7.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_8.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_9.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_10.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_11.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_12.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_13.sh" "bash RandomConstraintOrders/Rep_5/unbalanced_14.sh")
 
 #### Dating the tree without constraints, with balanced calibrations:
 for id in "${!PROGRAMS[@]}"; do
