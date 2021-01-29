@@ -38,4 +38,4 @@ for i in range(num):
     print(num_scripts)
     with open(os.path.join(folder_with_launchers, "launcher_Rep_" + str(i) + ".sh"), "w") as fout:
         fout.write(lines.replace("\"TOREPLACEWITH28JOBS\"", all_scripts_balanced +
-                                 " " + all_scripts_unbalanced).replace("balancedRuns", "Rep_"+str(i)).replace("\"ONESHERE\"", "\"1\" "*num_scripts))
+                                 " " + all_scripts_unbalanced).replace("balancedRuns", "Rep_"+str(i)).replace("\"FOURSHERE\"", "\"4\" "*num_scripts))
