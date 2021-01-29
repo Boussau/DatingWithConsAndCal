@@ -11,11 +11,11 @@
 # If some error happens before srun it will be outputted to $HOME/nohup.out
 #
 # number of tasks for a file (in same order as files)
-TASKS=("1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" )
+TASKS=("4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" )
 # comma separated list of partitions
 PARTITIONS="med"
 # threads per instance of program needed
-THREADS="4"
+THREADS="1"
 # expected runtime
 TIME="0"
 # jobname prefix

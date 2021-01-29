@@ -23,15 +23,16 @@ python Scripts/buildScriptsForRandomOrdersOnElte.py RandomConstraintOrders 10
 # Preparing the launchers for elte:
 python Scripts/buildElteLaunchers_RandomOrder.py FolderWithLaunchersRandomOrder RandomConstraintOrders launchDatingBalancedRandomOrder_Elte.sh 10
 
-
-# dating the tree with balanced calibrations and varying numbers of constraints, Random Orders, on mellifera.elte:
-chmod +x launchAllBalancedJobsRO_Elte.sh
-nohup ./launchAllBalancedJobsRO_Elte.sh &
-
-# dating the tree with balanced calibrations and varying numbers of constraints, Random Orders, on mellifera.elte:
-chmod +x launchAllUnbalancedJobsRO_Elte.sh
-nohup ./launchAllUnbalancedJobsRO_Elte.sh &
-
+nohup FolderWithLaunchersRandomOrder/launcher_Rep_0.sh &
+nohup FolderWithLaunchersRandomOrder/launcher_Rep_1.sh &
+nohup FolderWithLaunchersRandomOrder/launcher_Rep_2.sh &
+nohup FolderWithLaunchersRandomOrder/launcher_Rep_3.sh &
+nohup FolderWithLaunchersRandomOrder/launcher_Rep_4.sh &
+nohup FolderWithLaunchersRandomOrder/launcher_Rep_5.sh &
+nohup FolderWithLaunchersRandomOrder/launcher_Rep_6.sh &
+nohup FolderWithLaunchersRandomOrder/launcher_Rep_7.sh &
+nohup FolderWithLaunchersRandomOrder/launcher_Rep_8.sh &
+nohup FolderWithLaunchersRandomOrder/launcher_Rep_9.sh &
 
 
 # Then we can make map trees for each file.
