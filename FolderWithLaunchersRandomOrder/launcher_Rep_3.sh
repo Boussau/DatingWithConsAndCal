@@ -11,11 +11,11 @@
 # If some error happens before srun it will be outputted to $HOME/nohup.out
 #
 # number of tasks for a file (in same order as files)
-TASKS=("4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" "4" )
+TASKS=("1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" "1" )
 # comma separated list of partitions
 PARTITIONS="med"
 # threads per instance of program needed
-THREADS="1"
+THREADS="4"
 # expected runtime
 TIME="0"
 # jobname prefix
@@ -31,6 +31,5 @@ for id in "${!PROGRAMS[@]}"; do
 srun --mem-per-cpu=${MEMORY} -n ${TASKS[$id]} -c $THREADS -o ${JOBNAME}_%j.jobout -p $PARTITIONS -J ${JOBNAME}_0 --time $TIME -- ${PROGRAMS[$id]} > ${JOBNAME}_$id_rb.out &
 sleep 1
 done
-
 
 # wait for sruns to finish
