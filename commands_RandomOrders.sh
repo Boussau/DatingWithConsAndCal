@@ -46,7 +46,10 @@ for i in Rep* ; do scp mellifera.elte.hu:~/DatingWithConsAndCal/OutputDatingRand
 
 
 ## Analysing the dated trees
-./launchAnalysis.sh > resultAllTrees.txt
+./launchAnalysisRandomOrder.sh > resultAllTreesRandomOrder.txt
 
-grep -A1 "fracInHPD" resultAllTrees.txt | grep -v "fracInHPD" | grep -v "-" > resultAllTreesExcerpt.txt
+grep -A1 "fracInHPD" resultAllTreesRandomOrder.txt | grep -v "fracInHPD" | grep -v "-" > resultAllTreesRandomOrderExcerpt.txt
 # then analysis in Analysis of constraints vs calibrations.ipynb
+
+
+python Scripts/linkRandomOrderResultsToConstraints.py resultAllTreesRandomOrderExcerpt.txt resultAllTreesExcerpt.txt Constraints/constraints_15.Rev statsForAllRuns.tsv
