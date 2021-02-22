@@ -2,7 +2,7 @@ from ete3 import Tree
 import re
 
 
-exec (open("/home/boussau/Data/TransferRelated/datingWithTransfers/ReplicatedAnalysis_112019/Scripts/usefulFunctions.py").read ())
+exec (open("/home/boussau/Work/TransferRelated/datingWithTransfers/ReplicatedAnalysis_112019/Scripts/usefulFunctions.py").read ())
 
 def readMAPChronogramFromRBOutput (file):
     try:
