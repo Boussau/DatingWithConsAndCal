@@ -21,7 +21,7 @@ if "y" in verbose:
 ###################################################################
 
 # Load useful functions
-exec (open("/home/boussau/Data/TransferRelated/datingWithTransfers/ReplicatedAnalysis_112019/Scripts/functionsToCompareChronograms.py").read ())
+exec (open("/home/boussau/Work/TransferRelated/datingWithTransfers/ReplicatedAnalysis_112019/Scripts/functionsToCompareChronograms.py").read ())
 
 #import functionsToCompareChronograms as fn
 # "/home/boussau/Programming/Notebooks/code/functionsToCompareChronograms.py"
