@@ -1,0 +1,271 @@
+---
+title: "Analysis of statsForAllRuns.tsv"
+output: html_notebook
+---
+
+
+```{r}
+d<- read.table("statsForAllRuns.tsv", h=T, sep="\t", colClasses=c("character", "integer", "integer", "factor", "factor", rep("numeric", 14), rep("factor", 15)))
+```
+
+Working in percents rather than proportions
+```{r}
+d$rmsd_norm <- 100*d$rmsd_norm 
+```
+
+
+```{r}
+summary(d)
+```
+
+### Link between constraints and their number in Fig. 2 of the paper
+```{r}
+colnames(d[20:34])
+```
+
+
+```{r}
+constraint_numbers = c(1, 4, 6, 9, 12, 7, 10, 13, 15, 2, 3, 5, 8, 14, 11)
+colnames(d)[20:34] <- paste("C", as.character(constraint_numbers), sep="_")
+```
+
+
+
+# Plots of the data
+## Normalized RMSD of node ages
+```{r}
+col_cat <- c(y="#E69F00", n="#56B4E9")
+plot(jitter(d$numCons), d$rmsd_norm, ylab="Normalized RMSD of node ages (%)", xlab="Number of constraints", col=col_cat[d$balanced], pch=20)
+
+```
+
+### Using ggplot
+```{r}
+library(ggplot2)
+
+#Create a custom color scale
+myColors <- c(y="#E69F00",n="#56B4E9")
+names(myColors) <- levels(d$balanced)
+colScale <- scale_colour_manual(name = "Balanced\ncalibrations",values = myColors)
+
+ggplot(d, aes(x=numCons, y=rmsd_norm, colour = balanced)) + 
+  geom_point(size = 3, position="jitter") + 
+  colScale +
+  geom_smooth(method=lm, color='#2C3E50') +
+  labs(x="Number of constraints", y="Normalized RMSD of node ages (%)")
+```
+
+## Fraction of dates in 95% HPD
+
+```{r}
+
+ggplot(d, aes(x=numCons, y=fracInHPD, colour = balanced)) + 
+  geom_point(size = 3, position="jitter") + 
+  colScale +
+  geom_smooth(method=lm, color='#2C3E50') +
+  labs(x="Number of constraints", y="Fraction of node ages in 95% HPD (%)")
+
+```
+
+
+## Median size of the 95% HPD
+
+```{r}
+
+ggplot(d, aes(x=numCons, y=percent50, colour = balanced)) + 
+  geom_point(size = 3, position="jitter") + 
+  colScale +
+  geom_smooth(method=lm, color='#2C3E50') +
+  labs(x="Number of constraints", y="Median size of the 95% HPD")
+
+# 
+```
+
+
+# Linear models
+## Model with the total number of constraints as explanatory variable
+
+
+```{r}
+mod_sum <- lm(formula("rmsd_norm ~ numCons"), data=d)
+```
+
+
+```{r}
+summary(mod_sum)
+```
+
+
+```{r}
+plot(d$rmsd_norm, mod_sum$fitted.values, pch=20, col=rgb(0,0,0,0.3))
+abline(a=0, b=1, col="grey", lwd=2)
+```
+
+
+## Does it help to include whether the calibrations are balanced or not?
+```{r}
+mod_sum_balanced <- lm(formula("rmsd_norm ~ numCons + balanced"), data=d)
+```
+
+```{r}
+summary(mod_sum_balanced)
+```
+
+No, it does not!
+
+
+
+## Model with individual constraints as explanatory variables
+
+### generate the formula
+```{r}
+xs <- paste0(colnames(d)[20:34], collapse=" + ")
+y <- "rmsd_norm"
+formul <- formula(paste (y, xs, sep="~"))
+```
+
+## Run the regression
+
+```{r}
+model <- lm(formul, data=d)
+```
+
+```{r}
+summary(model)
+```
+
+```{r}
+plot(model)
+```
+
+```{r}
+plot(d$rmsd_norm, model$fitted.values, pch=20, col=rgb(0,0,0,0.3))
+abline(a=0, b=1, col="grey", lwd=2)
+```
+### Using jtools https://cran.r-project.org/web/packages/jtools/vignettes/summ.html
+
+```{r}
+library(jtools)
+plot_summs(model, scale = FALSE, inner_ci_level = .9)
+```
+
+The most informative constraints are read from left to right. These are numbers 5, 6, 13.
+Looking at the summary:
+- including constraint 5 on average reduces the RMSD by 9.1%
+- including constraint 6 on average reduces the RMSD by 5.5%
+- including constraint 13 on average reduces the RMSD by 4.4%
+
+The least informative ones are 14 and 3.
+
+Same plot, controlling what I do:
+
+```{r}
+std_errors_times_2 <- 2 * summary(model)$coefficients[, 2][2:16]
+
+par(mar=c(4, 5, 2, 1) + 0.1)
+plot(constraint_numbers, model$coefficients[2:16], ylab='Contribution of the constraint\nto normalized RMSD', xlab='Constraint', ylim=c(-11, 2), xaxt="n")
+axis(side=1, col="black", at=constraint_numbers, labels=constraint_numbers) 
+at = axTicks(1)
+mtext("Constraint", side=1, las=0, line = 3)
+text(1:15, -11, labels=c("", "*", "", "", "*", "*", "*", "", "", "", "", "*", "*", "", ""), cex=2) 
+abline(a=0, b=0, lwd=2, col="grey", lty=2)
+arrows(x0=constraint_numbers, y0=model$coefficients[2:16] - std_errors_times_2, x1=constraint_numbers, y1=model$coefficients[2:16] + std_errors_times_2, code=3, angle=90, length=0.02, col="black", lwd=2)
+points(constraint_numbers, model$coefficients[2:16], pch=20, cex=2, col="black")
+points(constraint_numbers, model$coefficients[2:16], pch=20, cex=1, col="grey")
+```
+
+
+## Are there constraints present in the experiments with rmsd_norm <48 and not in those with rmsd_norm > 48?
+
+```{r}
+summary(d[which (d$rmsd_norm > 48),20:34])
+```
+
+
+```{r}
+summary(d[which (d$rmsd_norm <= 48),20:34])
+```
+
+## What makes constraints informative?
+Loading statistics on the constraints
+```{r}
+dcons<-read.table("statisticsOnConstraints.tsv", h=T)
+dcons$informativeness <- model$coefficients[2:length(model$coefficients)]
+
+dconsBL<-read.table("statisticsOnConstraintsOnBLTree.tsv", h=T)
+dconsBL$informativeness <- model$coefficients[2:length(model$coefficients)]
+```
+
+```{r}
+#model_informativeness <- lm(dcons$informativeness ~ dcons$o_age + dcons$y_age + dcons$delta_age + dcons$delta_nodes + dcons$delta_dist + dcons$across_the_root )
+model_informativeness <- lm(dcons$informativeness ~ dcons$delta_age + dcons$delta_nodes + dcons$delta_dist + dcons$across_the_root +  dcons$num_leaves_younger + dcons$num_leaves_older + dcons$num_ancestors_younger + dcons$num_ancestors_older  )
+
+summary(model_informativeness )
+```
+
+A few factors are informative at the 5% threshold. The interpretation is that what matters is the size of the younger subtree first, then how far the two nodes are from each other.
+
+```{r}
+summ(model_informativeness)
+```
+
+
+```{r}
+#model_informativeness <- lm(dcons$informativeness ~ dcons$o_age + dcons$y_age + dcons$delta_age + dcons$delta_nodes + dcons$delta_dist + dcons$across_the_root )
+model_informativenessBL <- lm(dconsBL$informativeness ~ dconsBL$delta_depth + dconsBL$delta_nodes + dconsBL$delta_dist + dconsBL$across_the_root + dconsBL$num_leaves_older + dconsBL$num_leaves_younger + dconsBL$num_ancestors_older + dconsBL$num_ancestors_younger)
+
+summary(model_informativenessBL )
+```
+
+The model explains less variation when the data has been collected on the BL tree. Let's look into deviations from clocklikeness.
+
+```{r}
+dconsBL$o_deviation <- dconsBL$o_depth * 100 - dcons$o_age
+dconsBL$y_deviation <- dconsBL$y_depth * 100 - dcons$y_age
+dconsBL$delta_deviation <- dconsBL$o_deviation - dconsBL$y_deviation
+```
+
+
+```{r}
+#model_informativeness <- lm(dcons$informativeness ~ dcons$o_age + dcons$y_age + dcons$delta_age + dcons$delta_nodes + dcons$delta_dist + dcons$across_the_root )
+model_informativenessBL <- lm(dconsBL$informativeness ~ dconsBL$delta_deviation + dconsBL$delta_nodes + dconsBL$delta_dist + dconsBL$across_the_root + dconsBL$num_leaves_older + dconsBL$num_leaves_younger )
+
+summary(model_informativenessBL )
+```
+
+
+## Where did we get the best improvement?
+```{r}
+which(d$rmsd_norm[2:length(d$rmsd_norm)] - d$rmsd_norm[1:(length(d$rmsd_norm)-1)] == min(d$rmsd_norm[2:length(d$rmsd_norm)] - d$rmsd_norm[1:(length(d$rmsd_norm)-1)]))
+```
+
+--> line 222 has the best improvement over line 221.
+```{r}
+d[221,]
+```
+
+```{r}
+d[222,]
+
+```
+
+Replicate 6, moving from 2 to 3 constraints.
+
+### Let's look at the trees
+```{r}
+library(ape)
+t_6_2 <- read.nexus(file="OutputDatingRandomOrder/Rep_6/Cal_10_y_y_Cons_2_cons_BD_UGAMr_BL_MC3.tree")
+t_6_3 <- read.nexus(file="OutputDatingRandomOrder/Rep_6/Cal_10_y_y_Cons_3_cons_BD_UGAMr_BL_MC3.tree")
+true_tree <- read.tree(file="SimulatedTrees/proposedTree.dnd")
+
+```
+```{r}
+
+library(ggplot2)
+library("ggtree")
+ptrue <- ggtree(true_tree)
+p1 <- ggtree(t_6_2)
+p2 <- ggtree(t_6_3)
+
+multiplot(ptrue, p1, p2, nrow=3, ncol=1)
+```
