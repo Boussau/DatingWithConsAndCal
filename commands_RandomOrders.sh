@@ -53,3 +53,8 @@ grep -A1 "fracInHPD" resultAllTreesRandomOrder.txt | grep -v "fracInHPD" | grep 
 
 
 python Scripts/linkRandomOrderResultsToConstraints.py resultAllTreesRandomOrderExcerpt.txt resultAllTreesExcerpt.txt Constraints/constraints_15.Rev statsForAllRuns.tsv
+
+# Computing statistics to understand the informativeness of constraints
+python Scripts/computeStatisticsForConstraints.py SimulatedTrees/proposedTree.dnd Constraints/constraints_15.Rev statisticsOnConstraints.tsv
+
+python Scripts/computeStatisticsForConstraintsOnBLTree.py SimulatedTrees/proposedTree_rescaled_altered.dnd Constraints/constraints_15.Rev statisticsOnConstraintsOnBLTree.tsv

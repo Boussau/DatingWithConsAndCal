@@ -11,9 +11,9 @@ with open(constraints_file, "r") as fin:
         constraints_list.append(l.strip())
 
 with open(out, "w") as fout:
-    fout.write("TreeId\tnumCalib\tnumCons\tbalanced\told_biased\tcorrelation\trmsd\trmsd_norm\tcor_bls\trmsd_bls\tnum_nodes\tnumInHPD\tfracInHPD\tpercent0\tpercent25\tpercent50\tpercents75\tpercent100\trep\tlistCons\t" )
+    fout.write("TreeId\tnumCalib\tnumCons\tbalanced\told_biased\tcorrelation\trmsd\trmsd_norm\tcor_bls\trmsd_bls\tnum_nodes\tnumInHPD\tfracInHPD\tpercent0\tpercent25\tpercent50\tpercents75\tpercent100\trep" )
     for constraint in constraints_list:
-        fout.write(constraint.replace("\t",",", 1).replace("\t","->", 1).replace("\t",",", 1)+"\t")
+        fout.write("\t" + constraint.replace("\t",",", 1).replace("\t","->", 1).replace("\t",",", 1))
     fout.write("\n")
     #Getting the results from the chosen order
     with open(chosen_order_file, "r") as fin:
@@ -39,7 +39,7 @@ with open(out, "w") as fout:
             presence_absence = str()
             for constraint in constraints_list:
                 if constraint in liCons:
-                    presence_absence = presence_absence + "1\t"
+                    presence_absence = presence_absence + "\t1"
                 else:
-                    presence_absence = presence_absence + "0\t"
-            fout.write(l.strip() + "\t" + liCons + "\t"+ presence_absence + "\n")
+                    presence_absence = presence_absence + "\t0"
+            fout.write(l.strip() + presence_absence + "\n")

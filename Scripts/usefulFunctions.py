@@ -1,6 +1,7 @@
 import sys
 from ete3 import Tree, TreeStyle, NodeStyle
 from collections import OrderedDict, deque
+from numpy import mean, median
 from sortedcontainers import SortedSet
 
 def readTreeFromFile(file):
@@ -103,6 +104,61 @@ def getNodeHeights( t ):
                 node.up.name=name
             node2Height[node.up] = node2Height[node] + node.dist
             id2Height[str(node.up.name)] = node2Height[node] + node.dist
+      # print node.name + " : " + str(node2Height[node])
+    #return node2Height,id2Height
+    return id2Height
+
+
+
+def getAverageNodeDepths( t ):
+    node2Height = dict()
+    id2Height = dict()
+    root = t.get_tree_root()
+    for node in t.traverse("postorder"):
+        if node not in node2Height:
+            if node.is_leaf():
+                dist = root.get_distance(node.name)
+                node2Height[node] = dist
+                id2Height[node.name] = dist
+            else:
+                leaves = node.get_leaves()
+                dists = list()
+                name=""
+                for l in leaves:
+                    dists.append(node2Height[l])
+                    name += l.name
+                node.name = name
+                myDist = root.get_distance(node.name)
+                avg = mean(dists) - myDist
+                node2Height[node] = avg
+                id2Height[str(node.name)] = avg
+      # print node.name + " : " + str(node2Height[node])
+    #return node2Height,id2Height
+    return id2Height
+
+
+def getMedianNodeDepths( t ):
+    node2Height = dict()
+    id2Height = dict()
+    root = t.get_tree_root()
+    for node in t.traverse("postorder"):
+        if node not in node2Height:
+            if node.is_leaf():
+                dist = root.get_distance(node.name)
+                node2Height[node] = dist
+                id2Height[node.name] = dist
+            else:
+                leaves = node.get_leaves()
+                dists = list()
+                name=""
+                for l in leaves:
+                    dists.append(node2Height[l])
+                    name += l.name
+                node.name = name
+                myDist = root.get_distance(node.name)
+                avg = median(dists) - myDist
+                node2Height[node] = avg
+                id2Height[str(node.name)] = avg
       # print node.name + " : " + str(node2Height[node])
     #return node2Height,id2Height
     return id2Height
