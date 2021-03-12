@@ -94,7 +94,7 @@ constraints <- readRelativeNodeAgeConstraints(file=cons_file);
 ##############
 # Tree model #
 ##############
-source("Scripts/DatingRevScripts/GergelyScripts/"+tree_model+".Rev")
+source("Scripts/DatingRevScripts/AdditionalScripts/"+tree_model+".Rev")
 print(psi)
 ### add some moves that change the ages of the nodes in the tree
 if (time_moves)
@@ -151,12 +151,12 @@ source(calib_file)
 ################
 # Rate Model   #
 ################
-source("Scripts/DatingRevScripts/GergelyScripts/"+rate_model+".Rev")
+source("Scripts/DatingRevScripts/AdditionalScripts/"+rate_model+".Rev")
 
 ################
 # CTMC         #
 ################
-source("Scripts/DatingRevScripts/GergelyScripts/"+ctmc+".Rev")
+source("Scripts/DatingRevScripts/AdditionalScripts/"+ctmc+".Rev")
 
 #some things we would like to see in the .log
 for(i in 1:n_branches)

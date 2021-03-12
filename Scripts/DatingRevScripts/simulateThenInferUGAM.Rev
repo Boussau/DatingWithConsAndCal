@@ -269,7 +269,7 @@ if (constrain) psi ~  dnConstrainedNodeOrder(dnBDP(lambda=birth_rate, mu=death_r
 
 extension=extension+"_BD"
 
-source("../Scripts/DatingRevScripts/GergelyScripts/"+tree_model+".Rev")
+source("../Scripts/DatingRevScripts/AdditionalScripts/"+tree_model+".Rev")
 print(psi)
 ### add some moves that change the ages of the nodes in the tree
 if (time_moves)
@@ -334,7 +334,7 @@ extension += "_UGAMr"
 ################
 # CTMC         #
 ################
-source("../Scripts/DatingRevScripts/GergelyScripts/"+ctmc+".Rev")
+source("../Scripts/DatingRevScripts/AdditionalScripts/"+ctmc+".Rev")
 
 #some things we would like to see in the .log
 for(i in 1:n_branches)

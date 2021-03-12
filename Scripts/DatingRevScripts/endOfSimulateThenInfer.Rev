@@ -137,12 +137,12 @@ if (ctmc=="BL" || initialize_rates) {
 ################
 # Rate Model   #
 ################
-source("../Scripts/DatingRevScripts/GergelyScripts/"+rate_model+".Rev")
+source("../Scripts/DatingRevScripts/AdditionalScripts/"+rate_model+".Rev")
 
 ################
 # CTMC         #
 ################
-source("../Scripts/DatingRevScripts/GergelyScripts/"+ctmc+".Rev")
+source("../Scripts/DatingRevScripts/AdditionalScripts/"+ctmc+".Rev")
 
 #some things we would like to see in the .log
 for(i in 1:n_branches)
