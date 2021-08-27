@@ -1,6 +1,6 @@
 # Scripts of interest to replicate the analyses presented in "Relative time constraints improve molecular dating"
 
-*Szöllősi Gergely, Höhna Sebastian, Williams Tom A., Schrempf Dominik, Daubin Vincent, Boussau Bastien*
+*Szollosi Gergely, Hoehna Sebastian, Williams Tom A., Schrempf Dominik, Daubin Vincent, Boussau Bastien*
 
 ### Simulations of deviations from the clock
 
