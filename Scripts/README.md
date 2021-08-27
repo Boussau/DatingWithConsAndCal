@@ -1,9 +1,9 @@
-# Scripts of interest to replicate the analyses presented in
-# "Relative time constraints improve molecular dating"
+# Scripts of interest to replicate the analyses presented in "Relative time constraints improve molecular dating"
+
 *Szöllősi Gergely, Höhna Sebastian, Williams Tom A., Schrempf Dominik, Daubin Vincent, Boussau Bastien*
 
-
 ### Simulations of deviations from the clock
+
 * The script to introduce deviations from the clock into an ultrametric tree is [alterBranchLengths.py](alterBranchLengths.py)
 * The tree with altered branch lengths resulting from this script is [here](https://github.com/Boussau/DatingWithConsAndCal/blob/master/SimulatedTrees/proposedTree_rescaled_altered.dnd.pdf).
 
