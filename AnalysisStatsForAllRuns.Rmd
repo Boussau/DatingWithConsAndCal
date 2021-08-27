@@ -13,6 +13,13 @@ Working in percents rather than proportions
 d$rmsd_norm <- 100*d$rmsd_norm 
 ```
 
+Renaming balanced or not
+```{r}
+levels(d$balanced)[levels(d$balanced)=="n"] <- "unbalanced"
+levels(d$balanced)[levels(d$balanced)=="y"] <- "balanced"
+```
+
+
 
 ```{r}
 summary(d)
@@ -46,13 +53,14 @@ library(ggplot2)
 #Create a custom color scale
 myColors <- c(y="#E69F00",n="#56B4E9")
 names(myColors) <- levels(d$balanced)
-colScale <- scale_colour_manual(name = "Balanced\ncalibrations",values = myColors)
+colScale <- scale_colour_manual(name = "Calibrations",values = myColors)
 
 ggplot(d, aes(x=numCons, y=rmsd_norm, colour = balanced)) + 
   geom_point(size = 3, position="jitter") + 
   colScale +
   geom_smooth(method=lm, color='#2C3E50') +
-  labs(x="Number of constraints", y="Normalized RMSD of node ages (%)")
+  labs(x="Number of constraints", y="Normalized RMSD of node ages (%)")+
+  scale_fill_discrete("")
 ```
 
 ## Fraction of dates in 95% HPD
